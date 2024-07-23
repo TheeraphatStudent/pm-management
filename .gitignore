@@ -1,0 +1,4 @@
+.class
+.vscode
+bin
+pm-management/bin/pages/*.class
