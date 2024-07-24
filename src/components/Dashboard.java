@@ -33,7 +33,7 @@ public class Dashboard {
         
         // Content
         try {
-            Scanner fr = new Scanner(new File("C:/Users/ASUS/Desktop/Code/Learn/learn-java/Java-OOP/pm-management/src/pm2.5.txt"));
+            Scanner fr = new Scanner(new File("C:/Users/ASUS/Desktop/Code/Learn/learn-java/pm-management/document/pm2.5.txt"));
 
             while (fr.hasNextLine()) {
                 // System.out.println(fr.nextLine());

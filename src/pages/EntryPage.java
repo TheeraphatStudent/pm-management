@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
+import resource.colors.MainColor;
 import resource.environment.WindowClosingFrameEvent;
 import resource.environment.WindowEntryScreen;
 
@@ -30,6 +31,7 @@ public class EntryPage extends JFrame {
         // ButtonNavigate navigateToMember = new ButtonNavigate("Member", this, new
         // Member());
         JButton navigateToPage = new JButton("Program");
+
         navigateToPage.addActionListener(e -> {
             JFrame page = new Page();
             new WindowClosingFrameEvent(this, page);
@@ -48,7 +50,7 @@ public class EntryPage extends JFrame {
         JPanel panel = new JPanel(new GridLayout(4,2));
         panel.add(navigateToPage);
         panel.add(navigateToMember);
-        panel.setBackground(Color.LIGHT_GRAY);
+        panel.setBackground(MainColor.secondary());
 
         add(panel);
 

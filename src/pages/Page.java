@@ -52,10 +52,10 @@ public class Page extends JFrame {
         setLayout(new GridBagLayout());
         GridBagConstraints gridConst = new GridBagConstraints();
 
-        getContentPane().setBackground(MainColor.primary());
+        getContentPane().setBackground(MainColor.secondary());
 
         // Panel Content
-        panel.setBackground(MainColor.primary());
+        panel.setBackground(MainColor.secondary());
         panel.add(dashboard.getDashboard());
         panel.add(statistic.getStatistic());
 
