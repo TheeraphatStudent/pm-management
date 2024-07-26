@@ -2,6 +2,7 @@ package components;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -18,19 +19,20 @@ import javax.swing.JTextPane;
 import javax.swing.JLabel;
 
 import pages.Member;
+import resource.colors.MainColor;
 
 public class Devpanel extends JPanel{
     public Devpanel(int top,int left,int bottom,int right,String name,String id){
         GridBagConstraints gridConst = new GridBagConstraints();
-        setBackground(Color.YELLOW);
+        setBackground(MainColor.primary());
         setPreferredSize(new Dimension(500,700));
         setLayout(new GridBagLayout());
 
         JPanel head = new JPanel();
-        head.setBackground(Color.white);
+        head.setBackground(MainColor.secondary());
 
         JPanel panelbox2 = new JPanel();
-        panelbox2.setBackground(Color.green);
+        panelbox2.setBackground(MainColor.trinary());
         panelbox2.setLayout(new GridBagLayout());
 
         try (InputStream is = Devpanel.class.getClassLoader().getResourceAsStream("resource/images/airplane.png")) {
@@ -52,10 +54,11 @@ public class Devpanel extends JPanel{
         gridConst.weightx = 1.0;
         gridConst.weighty = 1.0;
         gridConst.fill = GridBagConstraints.BOTH;
-        gridConst.insets = new Insets(40, 30, 10, 30);
+        gridConst.insets = new Insets(20, 30, 30, 30);
 
         JTextPane textname = new JTextPane ();
         textname.setText("Name : "+name+"\nID : "+id);
+        textname.setFont(new Font("Arial", Font.PLAIN, 18));
         textname.setEditable(false);
 
         panelbox2.add(textname,gridConst);

@@ -1,6 +1,7 @@
 package pages;
 
 
+import java.awt.Font;
 import java.awt.GridLayout;
 import javax.swing.JFrame;
 
@@ -24,7 +25,6 @@ public class Member extends JFrame {
 
         add(dev);
         add(dev2);
-
     }
 
 }
