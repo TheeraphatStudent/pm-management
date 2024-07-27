@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+
 import java.awt.Image;
 
 // Swing
@@ -21,6 +23,8 @@ import javax.swing.JTextPane;
 import javax.swing.JLabel;
 
 import pages.Member;
+import resource.colors.MainColor;
+import utils.useButton;
 
 public class Devpanel extends JPanel {
     public Devpanel() {
