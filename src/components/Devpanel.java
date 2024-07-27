@@ -1,6 +1,6 @@
 package components;
 
-import java.awt.Color;
+
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -18,7 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import javax.swing.JLabel;
 
-import pages.Member;
+
 import resource.colors.MainColor;
 
 public class Devpanel extends JPanel{
