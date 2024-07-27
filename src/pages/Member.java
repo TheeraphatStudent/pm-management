@@ -1,5 +1,7 @@
 package pages;
 
+
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -41,7 +43,6 @@ public class Member extends JFrame {
 
         add(dev);
         add(dev2);
-
     }
 
 }

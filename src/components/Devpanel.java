@@ -1,10 +1,8 @@
 package components;
 
-import pages.Member;
-
-// AWT
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -21,13 +19,8 @@ import java.awt.Image;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import javax.swing.JLabel;
-import javax.swing.JButton;
 
-// Utils
-import utils.useButton;
-
-// Resource
-import resource.environment.WindowEntryScreen;
+import pages.Member;
 
 public class Devpanel extends JPanel {
     public Devpanel() {
@@ -37,13 +30,14 @@ public class Devpanel extends JPanel {
         setLayout(new GridBagLayout());
         GridBagConstraints gridConst = new GridBagConstraints();
         setBackground(Color.YELLOW);
+        setPreferredSize(new Dimension(500,700));
+        setLayout(new GridBagLayout());
 
         JPanel head = new JPanel();
-        head.setPreferredSize(new Dimension(250, 250));
         head.setBackground(Color.white);
 
         JPanel panelbox2 = new JPanel();
-        panelbox2.setBackground(Color.green);
+        panelbox2.setBackground(MainColor.trinary());
         panelbox2.setLayout(new GridBagLayout());
 
         JButton createImg = new useButton().createButton("dev", "", 250, 250, "-");
@@ -54,10 +48,10 @@ public class Devpanel extends JPanel {
         gridConst.weightx = 1.0;
         gridConst.weighty = 1.0;
         gridConst.fill = GridBagConstraints.BOTH;
-        gridConst.insets = new Insets(40, 30, 10, 30);
+        gridConst.insets = new Insets(20, 30, 30, 30);
 
-        JTextPane textname = new JTextPane();
-        textname.setText("Name : " + name + "\nID : " + id);
+        JTextPane textname = new JTextPane ();
+        textname.setText("Name : "+name+"\nID : "+id);
         textname.setEditable(false);
 
         panelbox2.add(textname, gridConst);
