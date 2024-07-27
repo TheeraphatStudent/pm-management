@@ -22,8 +22,14 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.LayoutManager;
+
+// - Event
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
+
+// nio
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -49,7 +55,8 @@ public class Footer extends JPanel {
     private String filePath = "";
     private Page parentPage;
 
-    public Footer() {}
+    public Footer() {
+    }
 
     public Footer(Color getColor, Page parentPage) {
         this.parentPage = parentPage;
@@ -125,17 +132,16 @@ public class Footer extends JPanel {
         JPanel randomPanel = createPanel(new GridBagLayout(), MainColor.primary());
 
         // Action
+        JDialog dialogRange = new Footer().createModal(new GridBagLayout(), MainColor.secondary(), 500, 250, "Random Peoples Range");
         JPanel randomAction = createPanel(new GridLayout(1, 2, 20, 20), MainColor.primary());
         JButton randomRange = new useButton().createButton("-", "Random Range", MainColor.trinary(), 100, 20);
-        JDialog dialogRange = new Footer().createDialog(new GridBagLayout(), 500, 500, "Random Peoples Range");
+        JButton random = new useButton().createButton("-", "Random", MainColor.trinary(), 100, 20);
 
         randomRange.addActionListener((e -> {
             dialogRange.setVisible(true);
-            dialogRange.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
         }));
 
-        JButton random = new useButton().createButton("-", "Random", MainColor.trinary(), 100, 20);
 
         randomPanel.setBackground(MainColor.primary());
         randomAction.setBackground(MainColor.primary());
@@ -203,16 +209,37 @@ public class Footer extends JPanel {
         return panel;
     }
 
-    private JPanel createPanel(LayoutManager getLayout, Color bgColor, String title) {
+    private JPanel createPanel(Color bgColor, String title) {
         JPanel panel = new JPanel();
         JTextPane textPane = new JTextPane();
-        textPane.setText(title);
+        JTextField textField = new JTextField();
+        GridBagConstraints gridConst = new GridBagConstraints();
 
-        panel.setLayout(getLayout);
+        textPane.setText(title);
+        textPane.setEditable(false);
+        textPane.setBackground(bgColor);
+
+        textField.setSize(100, 50);
+
+        panel.setLayout(new GridBagLayout());
         panel.setBackground(bgColor);
         // panel.setCursor(Cursor.HAND_CURSOR);
 
-        panel.add(textPane);
+        gridConst.weightx = 1;
+        gridConst.weighty = 0;
+        gridConst.gridx = 0;
+        gridConst.gridy = 0;
+        gridConst.fill = GridBagConstraints.BOTH;
+        gridConst.insets = new Insets(10, 10, 0, 10);
+        panel.add(textPane, gridConst);
+
+        gridConst.weightx = 1;
+        gridConst.weighty = 1;
+        gridConst.gridx = 0;
+        gridConst.gridy = 1;
+        gridConst.fill = GridBagConstraints.BOTH;
+        gridConst.insets = new Insets(10, 10, 10, 10);
+        panel.add(textField, gridConst);
 
         return panel;
     }
@@ -232,17 +259,23 @@ public class Footer extends JPanel {
         return textField;
     }
 
-    private JDialog createDialog(LayoutManager layout, int width, int height, String title) {
+    private JDialog createModal(LayoutManager layout, Color color, int width, int height, String title) {
         GridBagConstraints gridConst = new GridBagConstraints();
 
         JDialog dialog = new JDialog();
-        JPanel startPanel = new JPanel(new GridBagLayout());
+        JButton random = new useButton().createButton("-", "Random", MainColor.trinary(), 100, 20);
 
+        // Panel range
+        JPanel rangePanel = createPanel(new GridBagLayout(), MainColor.secondary());
+        JPanel startPanel = createPanel(MainColor.primary(), "Min Peoples Range");
+        JPanel stopPanel = createPanel(MainColor.primary(), "Max Peoples Range");
+
+        dialog.setLayout(layout);
         dialog.setSize(width, height);
+        dialog.getContentPane().setBackground(color);
         dialog.setLocation(new WindowEntryScreen().getWidthCenter(), new WindowEntryScreen().getHeightCenter());
         dialog.setTitle(title);
 
-        // ถ้าไม่ Focus Dialog, จะถูกปิดอัตโนมัติ
         try (InputStream is = Footer.class.getClassLoader().getResourceAsStream("resource/images/random.png")) {
             if (is == null) {
                 System.out.println("Image not found");
@@ -254,26 +287,43 @@ public class Footer extends JPanel {
             ioe.printStackTrace();
         }
 
-        dialog.addFocusListener(new FocusListener() {
+        dialog.addWindowFocusListener(new WindowFocusListener() {
 
             @Override
-            public void focusGained(FocusEvent e) {
+            public void windowGainedFocus(WindowEvent e) {
                 System.out.println("On focus!");
-
             }
 
             @Override
-            public void focusLost(FocusEvent e) {
+            public void windowLostFocus(WindowEvent e) {
                 System.out.println("Not focus!");
                 dialog.dispose();
-
+                dialog.setLocation(new WindowEntryScreen().getWidthCenter(), new WindowEntryScreen().getHeightCenter());
             }
         });
 
-        dialog.add(startPanel);
+        gridConst.weightx = 1;
+        gridConst.weighty = 0.35;
+        gridConst.fill = GridBagConstraints.BOTH;
+        gridConst.insets = new Insets(20, 20, 20, 10);
+        rangePanel.add(startPanel, gridConst);
+
+        gridConst.weightx = 1;
+        gridConst.weighty = 0.35;
+        gridConst.fill = GridBagConstraints.BOTH;
+        gridConst.insets = new Insets(20, 10, 20, 20);
+        rangePanel.add(stopPanel, gridConst);
+
+        gridConst.gridy = 0;
+        gridConst.insets = new Insets(10, 10, 5, 10);
+        dialog.add(rangePanel, gridConst);
+
+        gridConst.gridy = 1;
+        gridConst.insets = new Insets(5, 10, 10, 10);
+        dialog.add(random, gridConst);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
         return dialog;
-
     }
+
 }

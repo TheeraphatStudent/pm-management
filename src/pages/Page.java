@@ -58,7 +58,7 @@ public class Page extends JFrame {
         getContentPane().setBackground(MainColor.secondary());
 
         panel.setBackground(MainColor.secondary());
- 
+
         gridConst.gridx = 0;
         gridConst.gridy = 0;
         gridConst.weightx = 2.4;
