@@ -33,7 +33,7 @@ public class Devpanel extends JPanel {
     public Devpanel(int top, int left, int bottom, int right, String name, String id) {
         setLayout(new GridBagLayout());
         GridBagConstraints gridConst = new GridBagConstraints();
-        setBackground(Color.YELLOW);
+        // setBackground(Color.YELLOW);
         setPreferredSize(new Dimension(500,700));
         setLayout(new GridBagLayout());
 
