@@ -42,25 +42,9 @@ public class Entrypagepanel extends JPanel{
             }
 
         });
-        gridConst.weightx = 1.0;
-        gridConst.weighty = 1.0;
-        gridConst.fill = GridBagConstraints.BOTH;
-        gridConst.insets = new Insets(top, left, bottom, right);
-        add(navigateToPage,gridConst);
-
-
-        // JPanel panel = new JPanel(new GridLayout(4, 2));
-        // panel.add(navigateToPage);
-        // panel.setBackground(MainColor.secondary());
-
-     
-
-        // add(panel);
 
 
 
-      
-        // add(panelbox2,gridConst);
 
        
     }

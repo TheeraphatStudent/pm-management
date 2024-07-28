@@ -2,27 +2,18 @@ package components;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
-// Image
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 
-import java.awt.Image;
+import javax.swing.JButton;
 
 // Swing
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
-import javax.swing.JLabel;
 
-import pages.Member;
 import resource.colors.MainColor;
 import utils.useButton;
 
