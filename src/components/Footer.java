@@ -86,7 +86,7 @@ public class Footer extends JPanel {
             FileNameExtensionFilter restrict = new FileNameExtensionFilter(".txt", "txt");
             chooserFile.setFileFilter(restrict);
             chooserFile.setDialogTitle("Select a dust file!");
-            chooserFile.setControlButtonsAreShown(false);
+            // chooserFile.setControlButtonsAreShown(true);
 
             JFrame frame = new JFrame();
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -142,7 +142,6 @@ public class Footer extends JPanel {
 
         }));
 
-
         randomPanel.setBackground(MainColor.primary());
         randomAction.setBackground(MainColor.primary());
 
@@ -171,29 +170,33 @@ public class Footer extends JPanel {
 
         // Rain Panel
         JPanel rainPanel = new Footer().createPanel(new GridBagLayout(), MainColor.primary());
-        JButton rainSimulate = new useButton().createButton("rain", "", MainColor.trinary(), 80, 80);
-        JButton artificialRainSimulate = new useButton().createButton("air", "", MainColor.trinary(), 80, 80);
+        JButton rainSimulate = new useButton().createButton("rain", "", MainColor.trinary(), 60, 60);
+        JButton artificialRainSimulate = new useButton().createButton("air", "", MainColor.trinary(), 60, 60);
+        // Back
+        JButton back = new useButton().createButton("-", "Back", MainColor.access("red"), 0, 0, "hand", parentPage, "entry");
 
         gridConst.insets = new Insets(20, 20, 20, 10);
-        gridConst.weightx = 0.5;
+        gridConst.weightx = 0.3;
         gridConst.weighty = 1;
         gridConst.gridx = 0;
-        gridConst.gridy = 0;
         gridConst.fill = GridBagConstraints.BOTH;
         rainPanel.add(rainSimulate, gridConst);
 
         gridConst.insets = new Insets(20, 10, 20, 20);
-        gridConst.weightx = 0.5;
+        gridConst.weightx = 0.3;
         gridConst.weighty = 1;
         gridConst.gridx = 1;
-        gridConst.gridy = 0;
         gridConst.fill = GridBagConstraints.BOTH;
         rainPanel.add(artificialRainSimulate, gridConst);
 
-        add(rainPanel);
+        gridConst.insets = new Insets(20, 0, 20, 20);
+        gridConst.weightx = 0.3;
+        gridConst.weighty = 1;
+        gridConst.gridx = 2;
+        gridConst.fill = GridBagConstraints.BOTH;
+        rainPanel.add(back, gridConst);
 
-        // Start
-        // JButton
+        add(rainPanel);
     }
 
     public String getFile() {

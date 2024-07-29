@@ -1,5 +1,6 @@
 package pages;
 
+import java.awt.Dimension;
 // Awt
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -50,6 +51,7 @@ public class Page extends JFrame {
         }
 
         setSize((int)(Math.floor(new WindowEntryScreen().getWidth() / 1.4)), (int)(Math.floor(new WindowEntryScreen().getHeight() / 1.4)));
+        setMinimumSize(new Dimension(850, 550));
         setLocation((int)(Math.floor(new WindowEntryScreen().getWidthCenter() / 2.5)), (int)(Math.floor(new WindowEntryScreen().getHeight()) / 6));
         setLayout(new GridBagLayout());
         GridBagConstraints gridConst = new GridBagConstraints();

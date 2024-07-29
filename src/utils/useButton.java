@@ -1,4 +1,6 @@
 package utils;
+
+import pages.EntryPage;
 import pages.Member;
 import pages.Page;
 import resource.environment.WindowClosingFrameEvent;
@@ -6,6 +8,8 @@ import resource.environment.WindowClosingFrameEvent;
 // Swing
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.ImageIcon;
 
 // AWT
 import java.awt.Color;
@@ -18,7 +22,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 
 import components.Footer;
 
@@ -95,6 +98,7 @@ public class useButton {
 
         } else if (btnCase != "") {
             icon += btnCase + ".png";
+            System.out.println(icon);
 
         } else {
             icon = null;
@@ -117,12 +121,14 @@ public class useButton {
 
         return btn;
     }
-    
-    public JButton createButton(String btnCase, String title, int width, int height, String cursorCase,JFrame thispage,String destpage) {
+
+    public JButton createButton(String btnCase, String title, Color color, int width, int height, String cursorCase,
+            JFrame thispage, String destpage) {
         JButton btn = new JButton(title);
         btn.setBorderPainted(false);
         btn.setOpaque(true);
-        btn.setContentAreaFilled(false);
+        btn.setContentAreaFilled(true);
+        btn.setBackground(color);
 
         btn.setPreferredSize(new Dimension(width, height));
 
@@ -167,28 +173,30 @@ public class useButton {
             e.printStackTrace();
         }
 
-        btn.addActionListener((e-> {
+        btn.addActionListener((e -> {
             if (destpage.equals("page")) {
                 JFrame page = new Page();
-            new WindowClosingFrameEvent(thispage, page);
-            page.setVisible(true);
-            thispage.dispose();
-            }
-            else if (destpage.equals("member")) {
+                new WindowClosingFrameEvent(thispage, page);
+                page.setVisible(true);
+                thispage.dispose();
+            } else if (destpage.equals("member")) {
                 JFrame member = new Member();
                 new WindowClosingFrameEvent(thispage, member);
                 member.setVisible(true);
                 thispage.dispose();
-            }
-            else if (destpage.equals("exit")) {
-                new WindowClosingFrameEvent(thispage);
+            } else if (destpage.equals("entry")) {
+                JFrame entry = new EntryPage();
+                new WindowClosingFrameEvent(thispage, entry);
+                entry.setVisible(true);
                 thispage.dispose();
-            }
-            else{
+            } else if (destpage.equals("exit")) {
+                new WindowClosingFrameEvent().windowClosingFrameEvent(thispage);
+            } else {
                 System.out.println("Page not found");
             }
         }));
 
         return btn;
     }
+
 }

@@ -4,11 +4,12 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import java.io.IOException;
-import java.io.InputStream;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 import javax.swing.JPanel;
 import javax.swing.JButton;
