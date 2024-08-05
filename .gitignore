@@ -1,4 +1,10 @@
 .class
+
 .vscode
+
 bin
+
 pm-management/bin/pages/*.class
+
+pm-management/src/resource/boonisa.png
+pm-management/src/resource/theeraphat.png

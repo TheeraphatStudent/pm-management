@@ -1,6 +1,7 @@
 package resource.environment;
 
 import javax.swing.JFrame;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
 import java.awt.event.WindowAdapter;
@@ -9,6 +10,9 @@ import java.awt.event.WindowEvent;
 public class WindowClosingFrameEvent {
     private JFrame currentFrame;
     private JFrame destFrame;
+
+    public WindowClosingFrameEvent() {
+    }
 
     public WindowClosingFrameEvent(JFrame _currentFrame) {
         this.currentFrame = _currentFrame;
@@ -30,6 +34,25 @@ public class WindowClosingFrameEvent {
                 }
             }
         });
+    }
+
+    public void windowClosingFrameEvent(JFrame _currentFrame) {
+        this.currentFrame = _currentFrame;
+        JFrame frame = new JFrame();
+
+        int result = JOptionPane.showConfirmDialog(
+                frame,
+                "Are you sure you want to exit the program?",
+                "Exit Program",
+                JOptionPane.YES_NO_OPTION);
+
+        if (result == JOptionPane.YES_OPTION) {
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            changeFrameEvent(_currentFrame);
+
+        } else {
+            frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        }
     }
 
     public WindowClosingFrameEvent(JFrame _currentFrame, JFrame _destFrame) {
@@ -62,6 +85,7 @@ public class WindowClosingFrameEvent {
         if (!breakDownFrame.isActive() && breakDownFrame != null) {
             System.out.println("Break down work!");
             breakDownFrame.dispose();
+            System.exit(0);
 
         }
 

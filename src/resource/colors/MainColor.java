@@ -9,7 +9,7 @@ public class MainColor {
     }
 
     public static Color secondary() {
-        return new Color(172, 225, 175, 70);
+        return new Color(228, 239, 231);
 
     }
 

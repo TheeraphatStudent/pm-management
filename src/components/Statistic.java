@@ -4,11 +4,12 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import java.io.IOException;
-import java.io.InputStream;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 import javax.swing.JPanel;
 import javax.swing.JButton;
@@ -28,9 +29,9 @@ public class Statistic {
         GridBagConstraints gridConstColorPanel = new GridBagConstraints();
         gridConstColorPanel.anchor = GridBagConstraints.CENTER;
 
-        panel.setBackground(MainColor.secondary());
+        panel.setBackground(MainColor.secondary().darker());
         toolPanel.setBackground(MainColor.secondary().darker());
-        statisticPanel.setBackground(MainColor.secondary().brighter().brighter());
+        statisticPanel.setBackground(MainColor.secondary().darker());
 
         JTextPane textPaneRed = new Statistic().createTextPane("Patient of 30%", MainColor.access("red"));
         JTextPane textPaneOrange = new Statistic().createTextPane("Patient of 20 - 29%", MainColor.access("orange"));
