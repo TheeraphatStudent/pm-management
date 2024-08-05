@@ -48,12 +48,14 @@ import pages.Page;
 import resource.colors.MainColor;
 import resource.environment.WindowClosingFrameEvent;
 import resource.environment.WindowEntryScreen;
-
+import utils.useAlert;
 import utils.useButton;
 
 public class Footer extends JPanel {
     private String filePath = "";
     private Page parentPage;
+
+    private boolean artificialRainState = false;
 
     public Footer() {
     }
@@ -132,7 +134,8 @@ public class Footer extends JPanel {
         JPanel randomPanel = createPanel(new GridBagLayout(), MainColor.primary());
 
         // Action
-        JDialog dialogRange = new Footer().createModal(new GridBagLayout(), MainColor.secondary(), 500, 250, "Random Peoples Range");
+        JDialog dialogRange = new Footer().createModal(new GridBagLayout(), MainColor.secondary(), 500, 250,
+                "Random Peoples Range");
         JPanel randomAction = createPanel(new GridLayout(1, 2, 20, 20), MainColor.primary());
         JButton randomRange = new useButton().createButton("-", "Random Range", MainColor.trinary(), 100, 20);
         JButton random = new useButton().createButton("-", "Random", MainColor.trinary(), 100, 20);
@@ -171,9 +174,33 @@ public class Footer extends JPanel {
         // Rain Panel
         JPanel rainPanel = new Footer().createPanel(new GridBagLayout(), MainColor.primary());
         JButton rainSimulate = new useButton().createButton("rain", "", MainColor.trinary(), 60, 60);
+
+        rainSimulate.addActionListener((e -> {
+            this.parentPage.reduceDustActions("all", false);
+
+        }));
+
+        // Artificial Rain
         JButton artificialRainSimulate = new useButton().createButton("air", "", MainColor.trinary(), 60, 60);
+
+        artificialRainSimulate.addActionListener((e -> {
+            if (!artificialRainState) {
+                artificialRainSimulate.setBackground(MainColor.access("orange"));
+                this.parentPage.reduceDustActions("area", true);
+
+            } else {
+                artificialRainSimulate.setBackground(MainColor.trinary());
+                this.parentPage.reduceDustActions("area", false);
+
+            }
+
+            this.artificialRainState = !this.artificialRainState;
+
+        }));
+
         // Back
-        JButton back = new useButton().createButton("-", "Back", MainColor.access("red"), 0, 0, "hand", parentPage, "entry");
+        JButton back = new useButton().createButton("-", "Back", MainColor.access("red"), 0, 0, "hand", parentPage,
+                "entry");
 
         gridConst.insets = new Insets(20, 20, 20, 10);
         gridConst.weightx = 0.3;
@@ -201,6 +228,12 @@ public class Footer extends JPanel {
 
     public String getFile() {
         return this.filePath;
+    }
+
+    private void panelReload(JPanel panel) {
+        panel.revalidate();
+        panel.repaint();
+
     }
 
     private JPanel createPanel(LayoutManager getLayout, Color bgColor) {
@@ -304,6 +337,12 @@ public class Footer extends JPanel {
                 dialog.setLocation(new WindowEntryScreen().getWidthCenter(), new WindowEntryScreen().getHeightCenter());
             }
         });
+
+        random.addActionListener((e -> {
+            dialog.dispose();
+            new useAlert().successAlert("Random People is \"" + 0 + "\"");
+
+        }));
 
         gridConst.weightx = 1;
         gridConst.weighty = 0.35;

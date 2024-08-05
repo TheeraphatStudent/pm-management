@@ -29,9 +29,9 @@ public class Statistic {
         GridBagConstraints gridConstColorPanel = new GridBagConstraints();
         gridConstColorPanel.anchor = GridBagConstraints.CENTER;
 
-        panel.setBackground(MainColor.secondary());
+        panel.setBackground(MainColor.secondary().darker());
         toolPanel.setBackground(MainColor.secondary().darker());
-        statisticPanel.setBackground(MainColor.secondary().brighter().brighter());
+        statisticPanel.setBackground(MainColor.secondary().darker());
 
         JTextPane textPaneRed = new Statistic().createTextPane("Patient of 30%", MainColor.access("red"));
         JTextPane textPaneOrange = new Statistic().createTextPane("Patient of 20 - 29%", MainColor.access("orange"));

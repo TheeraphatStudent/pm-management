@@ -101,4 +101,18 @@ public class Page extends JFrame {
         revalidate();
         repaint();
     }
+
+    // Random
+
+
+    // Rain
+    public void reduceDustActions(String reduceOps, boolean isActive) {
+        System.out.println("Reduce Dust Action: " + reduceOps);
+        dashboard.reduceDust(reduceOps, isActive);
+
+        revalidate();
+        repaint();
+
+    }
+
 }
