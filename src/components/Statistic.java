@@ -33,12 +33,14 @@ public class Statistic {
         toolPanel.setBackground(MainColor.secondary().darker());
         statisticPanel.setBackground(MainColor.secondary().darker());
 
+        // Tool Panel Content
+        
+
         JTextPane textPaneRed = new Statistic().createTextPane("Patient of 30%", MainColor.access("red"));
         JTextPane textPaneOrange = new Statistic().createTextPane("Patient of 20 - 29%", MainColor.access("orange"));
         JTextPane textPaneYellow = new Statistic().createTextPane("Patient of 10 - 19%", MainColor.access("yellow"));
         JTextPane textPaneGreen = new Statistic().createTextPane("Patient of 0 - 9%", MainColor.access("green"));
 
-        // Tool Panel Content
         JPanel colorPanelRed = new Statistic().createPanel(MainColor.access("red"));
         colorPanelRed.add(textPaneRed, gridConstColorPanel);
         toolPanel.add(colorPanelRed);

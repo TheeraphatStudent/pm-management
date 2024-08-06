@@ -95,8 +95,8 @@ public class Page extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
-    public void setFilePathInDashboard(String filePath) {
-        dashboard.setFile(filePath);
+    public void setFilePathInDashboard(String filePath, boolean isFileExit) {
+        dashboard.setFile(filePath, isFileExit);
         // Update Parent Frame
         revalidate();
         repaint();

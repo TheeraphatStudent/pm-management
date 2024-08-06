@@ -113,7 +113,7 @@ public class Footer extends JPanel {
                 System.out.println("Chosen File: " + this.filePath);
 
                 // ส่งค่ากลับไปที่ Parent Component
-                this.parentPage.setFilePathInDashboard(this.filePath);
+                this.parentPage.setFilePathInDashboard(this.filePath, false);
             }
 
             frame.dispose();

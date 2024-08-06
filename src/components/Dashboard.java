@@ -52,16 +52,17 @@ public class Dashboard implements DashboardProps {
     }
 
     private void updatedRain(String reduceDustOps) {
-
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 20; col++) {
+                int content = buttonValuesArray[row][col];
+                // System.out.println("Content: " + content);
+
                 if (reduceDustOps.equals("all")) {
-                    JButton btn = createButton(row, col,
-                            reduceDustInArea(buttonValuesArray[row][col], 50));
+                    JButton btn = createButton(row, col, reduceDustInArea(content, 50));
                     panel.add(btn);
 
                 } else {
-                    JButton btn = createButton(row, col, buttonValuesArray[row][col]);
+                    JButton btn = createButton(row, col, content);
                     panel.add(btn);
 
                 }
@@ -88,6 +89,8 @@ public class Dashboard implements DashboardProps {
                         String[] readLine = fr.nextLine().split("\\s+");
                         int col = 0;
                         for (String content : readLine) {
+                            // System.out.println("Btn Content: " + content);
+
                             JButton btn = createButton(row, col, Integer.parseInt(content));
                             panel.add(btn);
                             col++;
@@ -112,14 +115,14 @@ public class Dashboard implements DashboardProps {
     private JButton createButton(int row, int col, int dust) {
         JButton btn = new JButton();
 
+        // Dashboard Content
+        buttonValuesArray[row][col] = dust;
+
         if (dust >= 0 && dust <= 250) {
             Color buttonColor = getOriginalColor(dust);
 
             buttonColors.put(btn, buttonColor);
             buttonValues.put(btn, dust);
-
-            // Dashboard Content
-            buttonValuesArray[row][col] = dust;
 
             btn.setBackground(buttonColor);
             btn.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED, buttonColor.darker(),
@@ -130,14 +133,14 @@ public class Dashboard implements DashboardProps {
 
             btn.addActionListener(e -> {
                 // Reset Button Content After Clicked Another Button
-                if (lastClickedButton != null) {
-                    lastClickedButton.setBackground(buttonColors.get(lastClickedButton));
-                    lastClickedButton.setText("");
+                if (this.lastClickedButton != null) {
+                    this.lastClickedButton.setBackground(buttonColors.get(this.lastClickedButton));
+                    this.lastClickedButton.setText("");
                 }
 
                 btn.setBackground(btn.getBackground().darker());
                 btn.setText(String.valueOf(dust));
-                lastClickedButton = btn;
+                this.lastClickedButton = btn;
 
                 this.clickedRow = currentRow;
                 this.clickedCol = currentCol;
@@ -148,10 +151,14 @@ public class Dashboard implements DashboardProps {
 
                 if (this.isActive) {
                     System.out.println("<<<<<<<<<<<<<<< Get Surrounding Content Work!");
-                    getSurroundingContent(String.valueOf(dust));
+                    // getSurroundingContent(String.valueOf(dust));
+                    getSurroundingContent(String.valueOf(dust), btn);
 
                 } else {
+                    // Send Content In Area Was Clicked Here!
                     System.out.println(">>>>>>>>>>>>>>>> Not Get Surrounding Content!");
+
+                    
 
                 }
 
@@ -163,7 +170,7 @@ public class Dashboard implements DashboardProps {
             btn.setContentAreaFilled(true);
             btn.setOpaque(true);
         } else {
-            btn.setBackground(new Color(0));
+            btn.setBackground(MainColor.access("-"));
             btn.setEnabled(false);
         }
 
@@ -171,36 +178,31 @@ public class Dashboard implements DashboardProps {
     }
 
     private int reduceDustInArea(int dust, int percentage) {
-        return (int) (Math.floor((dust * percentage) / 100));
+        return (dust >= 0 && dust <= 250) ? ((dust) - ((int) (Math.floor((dust * percentage) / 100)))) : dust;
 
     }
 
     private Color getOriginalColor(int value) {
-        if (value <= 50) {
+        if (value < 0 || value > 250) {
+            return MainColor.access("-");
+        } else if (value <= 50) {
             return MainColor.access("green");
         } else if (value <= 100) {
             return MainColor.access("yellow");
         } else if (value <= 150) {
             return MainColor.access("orange");
         } else {
-            return MainColor.access("red");
+            return MainColor.access("orange");
         }
     }
 
-    public void setSelectedContent(String content, int row, int col, boolean isSurrounding) {
-        int getContent = Integer.parseInt(content);
-
-        if (isSurrounding) {
-            buttonValuesArray[row][col] = reduceDustInArea(getContent, 50);
-
-        } else {
-            buttonValuesArray[row][col] = reduceDustInArea(getContent, 30);
-
-        }
+    public int setSelectedContent(int content, int row, int col, boolean isSurrounding) {
+        int percentage = (isSurrounding) ? 50 : 30;
+        return new Dashboard().reduceDustInArea(content, percentage);
 
     }
 
-    private void getSurroundingContent(String content) {
+    private void getSurroundingContent(String content, JButton btn) {
         if (this.clickedRow == -1 || this.clickedCol == -1) {
             return;
         }
@@ -217,23 +219,18 @@ public class Dashboard implements DashboardProps {
                     0, (this.clickedCol - 1)); j <= Math.min(
                             19, (this.clickedCol + 1)); j++) {
                 // System.out.printf("Col >%d :", j);
-                if ((i == this.clickedRow) && (j == this.clickedCol)) {
-                    System.out.print(buttonValuesArray[i][j] + " ");
-                    setSelectedContent(content, i, j, true);
 
-                } else {
-                    System.out.print(buttonValuesArray[i][j] + " ");
-                    setSelectedContent(content, i, j, false);
-
-                }
+                boolean isSurrounding = (i == this.clickedRow) && (j == this.clickedCol);
+                buttonValuesArray[i][j] = setSelectedContent(buttonValuesArray[i][j], i, j, isSurrounding);
             }
 
             updateDashboard(false);
-            System.out.println();
         }
     }
 
-    public void setFile(String _File) {
+    public void setFile(String _File, boolean isFileExit) {
+        this.isFileAlreadyExit = isFileExit;
+
         System.out.println("Dashboard Set File Work! -> " + _File);
         this.fileContent = _File;
         updateDashboard(false);
