@@ -14,8 +14,6 @@ import javax.swing.JDialog;
 
 // Awt
 import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -24,8 +22,6 @@ import java.awt.Insets;
 import java.awt.LayoutManager;
 
 // - Event
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 
@@ -34,20 +30,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 // Img
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 
-import pages.EntryPage;
 import pages.Page;
 
 // Resource
 import resource.colors.MainColor;
-import resource.environment.WindowClosingFrameEvent;
 import resource.environment.WindowEntryScreen;
+
 import utils.useAlert;
 import utils.useButton;
 

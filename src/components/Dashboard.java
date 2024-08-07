@@ -3,8 +3,9 @@ package components;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+
 import java.io.File;
-import java.util.ArrayList;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -15,13 +16,11 @@ import javax.swing.border.BevelBorder;
 
 import pages.Page;
 
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.JDialog;
 
 import resource.colors.MainColor;
+
 import utils.useAlert;
 
 interface DashboardProps {
@@ -91,39 +90,78 @@ public class Dashboard implements DashboardProps {
         panel.removeAll();
 
         try {
-            if (!fileContent.equals("")) {
-                if (this.isFileAlreadyExit) {
-                    updatedRain(this.reduceDustOps);
-                    reloadContent();
+            if (!this.fileContent.equals("")) {
+                if (preloadDashboard()) {
+                    if (this.isFileAlreadyExit) {
+                        updatedRain(this.reduceDustOps);
+                        reloadContent();
 
-                } else {
-                    Scanner fr = new Scanner(new File(fileContent));
-                    int row = 0;
-                    while (fr.hasNextLine()) {
-                        String[] readLine = fr.nextLine().split("\\s+");
-                        int col = 0;
-                        for (String content : readLine) {
-                            // System.out.println("Btn Content: " + content);
+                    } else {
+                        Scanner fr = new Scanner(new File(this.fileContent));
+                        int row = 0;
+                        while (fr.hasNextLine()) {
+                            String[] readLine = fr.nextLine().split("\\s+");
+                            int col = 0;
+                            for (String content : readLine) {
+                                // System.out.println("Btn Content: " + content);
 
-                            JButton btn = createButton(row, col, Integer.parseInt(content));
-                            panel.add(btn);
-                            col++;
+                                JButton btn = createButton(row, col, Integer.parseInt(content));
+                                panel.add(btn);
+                                col++;
+                            }
+                            row++;
                         }
-                        row++;
+
+                        reloadContent();
+                        fr.close();
+                        this.isFileAlreadyExit = true;
                     }
 
-                    reloadContent();
-                    fr.close();
-                    this.isFileAlreadyExit = true;
+                } else {
+                    new useAlert().warringAlert("File Must Be Formatted & File Size Was 10 * 20!");
+
                 }
 
             } else {
                 new useAlert().warringAlert("Please Select File First!");
 
             }
+
         } catch (Exception e) {
             System.err.println("Something went wrong!: " + e);
         }
+    }
+
+    private boolean preloadDashboard() throws FileNotFoundException {
+        Scanner fr = new Scanner(new File(this.fileContent));
+
+        int rowComplete = 0, colComplete = 0;
+
+        int row = 0;
+        while (fr.hasNextLine()) {
+            String[] readLine = fr.nextLine().split("\\s+");
+            int col = 0;
+            for (String content : readLine) {
+                // System.out.println("Content: " + readLine);
+                // System.out.println("Content: " + content);
+
+                col++;
+                // System.out.println("Col: " + col);
+
+                colComplete = col;
+            }
+            row++;
+            // System.out.println("Row: " + row);
+
+            rowComplete = row;
+        }
+
+        System.out.printf("Row Content: %d\nCol Content: %d", rowComplete, colComplete);
+
+        fr.close();
+
+        return (rowComplete == 10 && colComplete == 20) ? true : false;
+
     }
 
     // Create Button
@@ -168,8 +206,7 @@ public class Dashboard implements DashboardProps {
 
                 if (this.isActive) {
                     System.out.println("<<<<<<<<<<<<<<< Get Surrounding Content Work!");
-                    // getSurroundingContent(String.valueOf(dust));
-                    getSurroundingContent(String.valueOf(dust), btn);
+                    getSurroundingContent(dust, btn);
 
                 } else {
                     // Send Content In Area Was Clicked Here!
@@ -206,12 +243,12 @@ public class Dashboard implements DashboardProps {
 
     }
 
-    private void getSurroundingContent(String content, JButton btn) {
+    private void getSurroundingContent(int content, JButton btn) {
         if (this.clickedRow == -1 || this.clickedCol == -1) {
             return;
         }
 
-        System.out.println("Surrounding content:");
+        System.out.println("Surrounding content: " + content);
 
         // Math min, max สำหรับกันไม่ให้จำนวนเกินขนาดของ Array
         for (int i = Math.max(
@@ -264,6 +301,8 @@ public class Dashboard implements DashboardProps {
     public void reduceDust(String options, boolean isActive) {
 
         this.isActive = isActive;
+
+        this.parentPage.resetStatistic();
 
         switch (options) {
             case "all":

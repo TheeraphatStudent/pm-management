@@ -8,7 +8,6 @@ import resource.environment.WindowClosingFrameEvent;
 // Swing
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.ImageIcon;
 
 // AWT

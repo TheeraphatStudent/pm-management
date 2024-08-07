@@ -4,24 +4,15 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontFormatException;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Random;
 
 import javax.swing.JPanel;
-import javax.swing.JButton;
 import javax.swing.JTextPane;
-import javax.swing.text.SimpleAttributeSet;
 
-import pages.Page;
 import resource.colors.MainColor;
+
 import utils.usePanel;
 import utils.useTextPane;
 
@@ -42,16 +33,16 @@ public class Statistic implements StatisticProps {
     public JPanel getStatistic() {
         updateStatistics();
 
-        panel.setBackground(MainColor.secondary().darker());
-        toolPanel.setBackground(MainColor.secondary().darker());
-        statisticPanel.setBackground(MainColor.secondary().darker());
-
         return panel;
 
     }
 
     private void updateStatistics() {
         reloadContent();
+
+        panel.setBackground(MainColor.getOriginalColor(this.sDust));
+        toolPanel.setBackground(MainColor.getOriginalColor(this.sDust));
+        statisticPanel.setBackground(MainColor.getOriginalColor(this.sDust));
 
         GridBagConstraints gridConst = new GridBagConstraints();
         GridBagConstraints gridConstColorPanel = new GridBagConstraints();
@@ -143,6 +134,17 @@ public class Statistic implements StatisticProps {
         this.sPatent = patent;
         this.sPatentRate = patentRate;
         this.sHealth = this.sPeople - patent;
+
+        updateStatistics();
+
+    }
+
+    public void resetStatistic() {
+        // this.sPeople = 0;
+        this.sDust = 0;
+        this.sPatent = 0;
+        this.sPatentRate = 0;
+        this.sHealth = 0;
 
         updateStatistics();
 

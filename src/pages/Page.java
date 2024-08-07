@@ -127,4 +127,11 @@ public class Page extends JFrame {
 
     }
 
+    public void resetStatistic() {
+        statistic.resetStatistic();
+
+        reloadContent();
+
+    }
+
 }
