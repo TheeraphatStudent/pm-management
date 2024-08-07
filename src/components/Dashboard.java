@@ -7,10 +7,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.Scanner;
 
 import javax.swing.BorderFactory;
 import javax.swing.border.BevelBorder;
+
+import pages.Page;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JButton;
@@ -21,9 +25,10 @@ import resource.colors.MainColor;
 import utils.useAlert;
 
 interface DashboardProps {
-    public JPanel panel = new JPanel(new GridLayout(10, 20, 3, 3));
+    public JPanel panel = new JPanel(new GridLayout(10, 20, 2, 2));
     public Map<JButton, Color> buttonColors = new HashMap<>();
     public Map<JButton, Integer> buttonValues = new HashMap<>();
+    public Map<JButton, Integer> buttonPatentRate = new HashMap<>();
     public int[][] buttonValuesArray = new int[10][20];
     public boolean simulateAreaActive = false;
 
@@ -39,6 +44,15 @@ public class Dashboard implements DashboardProps {
     private String fileContent = "";
     private boolean isFileAlreadyExit = false;
     private boolean isActive = false;
+    private Page parentPage;
+
+    public Dashboard(Page page) {
+        this.parentPage = page;
+
+    }
+
+    public Dashboard() {
+    }
 
     public JPanel getDashboard() {
         panel.setBackground(MainColor.secondary().darker());
@@ -112,17 +126,20 @@ public class Dashboard implements DashboardProps {
         }
     }
 
+    // Create Button
     private JButton createButton(int row, int col, int dust) {
         JButton btn = new JButton();
 
         // Dashboard Content
         buttonValuesArray[row][col] = dust;
+        btn.setSize(50, 50);
 
         if (dust >= 0 && dust <= 250) {
-            Color buttonColor = getOriginalColor(dust);
+            Color buttonColor = MainColor.getOriginalColor(dust);
 
             buttonColors.put(btn, buttonColor);
             buttonValues.put(btn, dust);
+            buttonPatentRate.put(btn, getPatentRate(dust));
 
             btn.setBackground(buttonColor);
             btn.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED, buttonColor.darker(),
@@ -158,7 +175,7 @@ public class Dashboard implements DashboardProps {
                     // Send Content In Area Was Clicked Here!
                     System.out.println(">>>>>>>>>>>>>>>> Not Get Surrounding Content!");
 
-                    
+                    this.parentPage.getStatisticData(dust, buttonPatentRate.get(btn));
 
                 }
 
@@ -169,6 +186,7 @@ public class Dashboard implements DashboardProps {
             btn.setFocusPainted(false);
             btn.setContentAreaFilled(true);
             btn.setOpaque(true);
+
         } else {
             btn.setBackground(MainColor.access("-"));
             btn.setEnabled(false);
@@ -182,21 +200,7 @@ public class Dashboard implements DashboardProps {
 
     }
 
-    private Color getOriginalColor(int value) {
-        if (value < 0 || value > 250) {
-            return MainColor.access("-");
-        } else if (value <= 50) {
-            return MainColor.access("green");
-        } else if (value <= 100) {
-            return MainColor.access("yellow");
-        } else if (value <= 150) {
-            return MainColor.access("orange");
-        } else {
-            return MainColor.access("orange");
-        }
-    }
-
-    public int setSelectedContent(int content, int row, int col, boolean isSurrounding) {
+    private int setSelectedContent(int content, int row, int col, boolean isSurrounding) {
         int percentage = (isSurrounding) ? 50 : 30;
         return new Dashboard().reduceDustInArea(content, percentage);
 
@@ -228,6 +232,27 @@ public class Dashboard implements DashboardProps {
         }
     }
 
+    // Patent Rate
+    private int getPatentRate(int dust) {
+        if (dust <= 50) {
+            return randomPatentRate(0, 9);
+        } else if (dust <= 100) {
+            return randomPatentRate(10, 19);
+        } else if (dust <= 150) {
+            return randomPatentRate(20, 29);
+        } else {
+            return 30;
+        }
+
+    }
+
+    private int randomPatentRate(int min, int max) {
+        Random rand = new Random();
+        return (int) (rand.nextInt(max - min + 1) + min);
+
+    }
+
+    // Public
     public void setFile(String _File, boolean isFileExit) {
         this.isFileAlreadyExit = isFileExit;
 

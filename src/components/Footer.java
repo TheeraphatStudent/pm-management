@@ -230,12 +230,6 @@ public class Footer extends JPanel {
         return this.filePath;
     }
 
-    private void panelReload(JPanel panel) {
-        panel.revalidate();
-        panel.repaint();
-
-    }
-
     private JPanel createPanel(LayoutManager getLayout, Color bgColor) {
         JPanel panel = new JPanel();
         panel.setLayout(getLayout);

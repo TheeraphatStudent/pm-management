@@ -37,6 +37,20 @@ public class MainColor {
 
     }
 
+    public static Color getOriginalColor(int value) {
+        if (value < 0 || value > 250) {
+            return MainColor.access("-");
+        } else if (value <= 50) {
+            return MainColor.access("green");
+        } else if (value <= 100) {
+            return MainColor.access("yellow");
+        } else if (value <= 150) {
+            return MainColor.access("orange");
+        } else {
+            return MainColor.access("red");
+        }
+    }
+
     private Color red() {
         return new Color(255, 104, 104);
 
