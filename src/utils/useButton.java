@@ -8,6 +8,7 @@ import resource.environment.WindowClosingFrameEvent;
 // Swing
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.ImageIcon;
 
 // AWT
@@ -121,15 +122,8 @@ public class useButton {
         return btn;
     }
 
-    public JButton createButton(
-            String btnCase,
-            String title,
-            Color color,
-            int width,
-            int height,
-            String cursorCase,
-            JFrame thispage,
-            String destpage) {
+    public JButton createButton(String btnCase, String title, Color color, int width, int height, String cursorCase,
+            JFrame thispage, String destpage) {
         JButton btn = new JButton(title);
         btn.setBorderPainted(false);
         btn.setOpaque(true);
