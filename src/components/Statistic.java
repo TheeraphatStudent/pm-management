@@ -4,56 +4,76 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontFormatException;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.swing.JPanel;
-import javax.swing.JButton;
 import javax.swing.JTextPane;
-import javax.swing.text.SimpleAttributeSet;
 
 import resource.colors.MainColor;
 
+import utils.usePanel;
+import utils.useTextPane;
 
-public class Statistic {
-    JPanel panel = new JPanel(new GridBagLayout());
-    JPanel toolPanel = new JPanel(new GridLayout(4, 1, 20, 20));
-    JPanel statisticPanel = new JPanel(new GridLayout(5, 1, 50, 20));
+interface StatisticProps {
+    public JPanel panel = new JPanel(new GridBagLayout());
+    public JPanel toolPanel = new JPanel(new GridLayout(4, 1, 20, 20));
+    public JPanel statisticPanel = new JPanel(new GridLayout(5, 1, 50, 20));
+
+}
+
+public class Statistic implements StatisticProps {
+    public int sPeople = 5000;
+    public int sDust = 0;
+    public int sPatent = 0;
+    public int sPatentRate = 0;
+    public int sHealth = 0;
 
     public JPanel getStatistic() {
+        updateStatistics();
+
+        return panel;
+
+    }
+
+    private void updateStatistics() {
+        reloadContent();
+
+        panel.setBackground(MainColor.getOriginalColor(this.sDust));
+        toolPanel.setBackground(MainColor.getOriginalColor(this.sDust));
+        statisticPanel.setBackground(MainColor.getOriginalColor(this.sDust));
+
         GridBagConstraints gridConst = new GridBagConstraints();
         GridBagConstraints gridConstColorPanel = new GridBagConstraints();
         gridConstColorPanel.anchor = GridBagConstraints.CENTER;
 
-        panel.setBackground(MainColor.secondary().darker());
-        toolPanel.setBackground(MainColor.secondary().darker());
-        statisticPanel.setBackground(MainColor.secondary().darker());
-
-        JTextPane textPaneRed = new Statistic().createTextPane("Patient of 30%", MainColor.access("red"));
-        JTextPane textPaneOrange = new Statistic().createTextPane("Patient of 20 - 29%", MainColor.access("orange"));
-        JTextPane textPaneYellow = new Statistic().createTextPane("Patient of 10 - 19%", MainColor.access("yellow"));
-        JTextPane textPaneGreen = new Statistic().createTextPane("Patient of 0 - 9%", MainColor.access("green"));
-
         // Tool Panel Content
-        JPanel colorPanelRed = new Statistic().createPanel(MainColor.access("red"));
-        colorPanelRed.add(textPaneRed, gridConstColorPanel);
-        toolPanel.add(colorPanelRed);
 
-        JPanel colorPanelOrange = new Statistic().createPanel(MainColor.access("orange"));
-        colorPanelOrange.add(textPaneOrange, gridConstColorPanel);
-        toolPanel.add(colorPanelOrange);
+        /*
+         * LinkedHashMap * เมื่อใช้ Loop จะเรียงละดับแบบ FCFS: เข้าก่อน ออกก่อน
+         * 1. Before -> Key, Value -> After
+         * 2. Before -> Key, Value -> After
+         * n. ...
+         */
+        LinkedHashMap<String, String> toolsContent = new LinkedHashMap<String, String>();
+        toolsContent.put("Patient of 30%", "red");
+        toolsContent.put("Patient of 20 - 29%", "orange");
+        toolsContent.put("Patient of 10 - 19%", "yellow");
+        toolsContent.put("Patient of 0 - 9%", "green");
 
-        JPanel colorPanelYellow = new Statistic().createPanel(MainColor.access("yellow"));
-        colorPanelYellow.add(textPaneYellow, gridConstColorPanel);
-        toolPanel.add(colorPanelYellow);
+        for (Map.Entry<String, String> entry : toolsContent.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
 
-        JPanel colorPanelGreen = new Statistic().createPanel(MainColor.access("green"));
-        colorPanelGreen.add(textPaneGreen, gridConstColorPanel);
-        toolPanel.add(colorPanelGreen);
+            System.out.println(key);
+
+            JTextPane statisticPane = new useTextPane().createSimpleTextPane(key, MainColor.access(value));
+            JPanel colorPanel = new usePanel().createSimplePanel(MainColor.access(value));
+
+            colorPanel.add(statisticPane, gridConstColorPanel);
+            toolPanel.add(colorPanel);
+        }
 
         // Statistic Panel
         /*
@@ -64,20 +84,21 @@ public class Statistic {
          * Health -> 5400
          */
 
-        JPanel peopleStatistic = new Statistic().createStatisticPanel("Peoples", 0);
-        statisticPanel.add(peopleStatistic);
+        LinkedHashMap<String, Integer> statisticContent = new LinkedHashMap<String, Integer>();
+        statisticContent.put("People", this.sPeople);
+        statisticContent.put("Dust", this.sDust);
+        statisticContent.put("Patent", this.sPatent);
+        statisticContent.put("Patent Rate", this.sPatentRate);
+        statisticContent.put("Health", this.sHealth);
 
-        JPanel dustStatistic = new Statistic().createStatisticPanel("Dust", 0);
-        statisticPanel.add(dustStatistic);
+        for (Map.Entry<String, Integer> entry : statisticContent.entrySet()) {
+            String key = entry.getKey();
+            int value = (int) (entry.getValue());
 
-        JPanel patent = new Statistic().createStatisticPanel("Patent", 0);
-        statisticPanel.add(patent);
+            JPanel statistic = new usePanel().createStatisticPanel(key, value);
+            statisticPanel.add(statistic);
 
-        JPanel patentRateStatistic = new Statistic().createStatisticPanel("Patent rate", 0);
-        statisticPanel.add(patentRateStatistic);
-
-        JPanel healthStatistic = new Statistic().createStatisticPanel("Health", 0);
-        statisticPanel.add(healthStatistic);
+        }
 
         gridConst.weightx = 0.4;
         gridConst.weighty = 1;
@@ -92,58 +113,40 @@ public class Statistic {
         gridConst.insets = new Insets(20, 20, 20, 20);
         panel.add(statisticPanel, gridConst);
 
-        return this.panel;
+    }
+
+    private void reloadContent() {
+        panel.removeAll();
+        toolPanel.removeAll();
+        statisticPanel.removeAll();
+
+        panel.revalidate();
+        panel.repaint();
 
     }
 
-    private JTextPane createTextPane(String text, Color color) {
-        JTextPane textPane = new JTextPane();
-        SimpleAttributeSet attributes = new SimpleAttributeSet();
-        textPane.setCharacterAttributes(attributes, true);
-        InputStream is = Statistic.class.getResourceAsStream("resource/font/KhaoklongThin.ttf");
-        try {
-            textPane.setFont(Font.createFont(Font.TRUETYPE_FONT, is).deriveFont(Font.PLAIN, 60));
-        } catch (FontFormatException | IOException e) {
-            // e.printStackTrace();
-        }
+    // Public
+    public void setStatistic(int dust, int patentRate) {
+        int patent = ((this.sPeople * patentRate) / 100);
 
-        textPane.setFont(new Font("Arial", Font.PLAIN, 20));
-        textPane.setText(text);
-        textPane.setEditable(false);
-        if (color != null) {
-            textPane.setBackground(color);
+        // this.sPeople
+        this.sDust = dust;
+        this.sPatent = patent;
+        this.sPatentRate = patentRate;
+        this.sHealth = this.sPeople - patent;
 
-        } else {
-            textPane.setBackground(null);
-
-        }
-        return textPane;
-    }
-
-    private JPanel createPanel(Color color) {
-        JPanel colorPanel = new JPanel(new GridBagLayout());
-        colorPanel.setBackground(color);
-
-        return colorPanel;
+        updateStatistics();
 
     }
 
-    private JPanel createStatisticPanel(String title, int value) {
-        JPanel panel = new JPanel(new GridBagLayout());
-        GridBagConstraints gridConst = new GridBagConstraints();
+    public void resetStatistic() {
+        // this.sPeople = 0;
+        this.sDust = 0;
+        this.sPatent = 0;
+        this.sPatentRate = 0;
+        this.sHealth = 0;
 
-        JTextPane titlePane = createTextPane(title, null);
-        JTextPane valuePane = createTextPane(String.valueOf(value), null);
-
-        gridConst.weightx = 0.5;
-        gridConst.gridx = 0;
-        panel.add(titlePane, gridConst);
-
-        gridConst.weightx = 0.5;
-        gridConst.gridx = 1;
-        panel.add(valuePane, gridConst);
-
-        return panel;
+        updateStatistics();
 
     }
 }
