@@ -30,16 +30,14 @@ import resource.environment.WindowEntryScreen;
 public class Page extends JFrame {
     JPanel panel = new JPanel(new GridBagLayout());
 
-    Dashboard dashboard = new Dashboard(this);
+    Dashboard dashboard = new Dashboard();
     Statistic statistic = new Statistic();
     Footer footer;
 
     public Page() {
         setTitle("PM 2.5 Reporter");
-        getContentPane().setBackground(MainColor.secondary());
 
-        // getClassLoader() -> เพื่อจะเช็คให้มั่นใจว่าใน Class นั้นๆ มี Content
-        // พร้อมที่จะแสดง Content แล้ว
+        // getClassLoader() -> เพื่อจะเช็คให้มั่นใจว่าใน Class นั้นๆ มี Content พร้อมที่จะแสดง Content แล้ว
         try (InputStream is = Page.class.getClassLoader().getResourceAsStream("resource/images/icon.png")) {
             if (is == null) {
                 System.out.println("Image not found");
@@ -52,27 +50,27 @@ public class Page extends JFrame {
             e.printStackTrace();
         }
 
-        setSize((int) (Math.floor(new WindowEntryScreen().getWidth() / 1.4)),
-                (int) (Math.floor(new WindowEntryScreen().getHeight() / 1.4)));
+        setSize((int)(Math.floor(new WindowEntryScreen().getWidth() / 1.4)), (int)(Math.floor(new WindowEntryScreen().getHeight() / 1.4)));
         setMinimumSize(new Dimension(850, 550));
-        setLocation((int) (Math.floor(new WindowEntryScreen().getWidthCenter() / 2.5)),
-                (int) (Math.floor(new WindowEntryScreen().getHeight()) / 6));
+        setLocation((int)(Math.floor(new WindowEntryScreen().getWidthCenter() / 2.5)), (int)(Math.floor(new WindowEntryScreen().getHeight()) / 6));
         setLayout(new GridBagLayout());
         GridBagConstraints gridConst = new GridBagConstraints();
         gridConst.fill = GridBagConstraints.BOTH;
+
+        getContentPane().setBackground(MainColor.secondary());
 
         panel.setBackground(MainColor.secondary());
 
         gridConst.gridx = 0;
         gridConst.gridy = 0;
-        gridConst.weightx = 0.6;
+        gridConst.weightx = 2.4;
         gridConst.weighty = 1;
         gridConst.insets = new Insets(20, 20, 20, 20);
         panel.add(dashboard.getDashboard(), gridConst);
 
         gridConst.gridx = 1;
         gridConst.gridy = 0;
-        gridConst.weightx = 0.4;
+        gridConst.weightx = 1.4;
         gridConst.weighty = 1;
         panel.add(statistic.getStatistic(), gridConst);
 
@@ -97,40 +95,23 @@ public class Page extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
-    private void reloadContent() {
-        this.revalidate();
-        this.repaint();
-
+    public void setFilePathInDashboard(String filePath) {
+        dashboard.setFile(filePath);
+        // Update Parent Frame
+        revalidate();
+        repaint();
     }
 
-    // Dashboard
-    public void setFilePathInDashboard(String filePath, boolean isFileExit) {
-        dashboard.setFile(filePath, isFileExit);
+    // Random
 
-        reloadContent();
-    }
 
     // Rain
     public void reduceDustActions(String reduceOps, boolean isActive) {
         System.out.println("Reduce Dust Action: " + reduceOps);
         dashboard.reduceDust(reduceOps, isActive);
 
-        reloadContent();
-
-    }
-
-    // Statistic
-    public void getStatisticData(int dust, int patentRate) {
-        statistic.setStatistic(dust, patentRate);
-
-        reloadContent();
-
-    }
-
-    public void resetStatistic() {
-        statistic.resetStatistic();
-
-        reloadContent();
+        revalidate();
+        repaint();
 
     }
 

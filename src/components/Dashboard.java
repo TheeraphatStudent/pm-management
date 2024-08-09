@@ -3,31 +3,27 @@ package components;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.Scanner;
 
 import javax.swing.BorderFactory;
 import javax.swing.border.BevelBorder;
-
-import pages.Page;
-
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JDialog;
 
 import resource.colors.MainColor;
-
 import utils.useAlert;
 
 interface DashboardProps {
-    public JPanel panel = new JPanel(new GridLayout(10, 20, 2, 2));
+    public JPanel panel = new JPanel(new GridLayout(10, 20, 3, 3));
     public Map<JButton, Color> buttonColors = new HashMap<>();
     public Map<JButton, Integer> buttonValues = new HashMap<>();
-    public Map<JButton, Integer> buttonPatentRate = new HashMap<>();
     public int[][] buttonValuesArray = new int[10][20];
     public boolean simulateAreaActive = false;
 
@@ -43,15 +39,6 @@ public class Dashboard implements DashboardProps {
     private String fileContent = "";
     private boolean isFileAlreadyExit = false;
     private boolean isActive = false;
-    private Page parentPage;
-
-    public Dashboard(Page page) {
-        this.parentPage = page;
-
-    }
-
-    public Dashboard() {
-    }
 
     public JPanel getDashboard() {
         panel.setBackground(MainColor.secondary().darker());
@@ -65,17 +52,16 @@ public class Dashboard implements DashboardProps {
     }
 
     private void updatedRain(String reduceDustOps) {
+
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 20; col++) {
-                int content = buttonValuesArray[row][col];
-                // System.out.println("Content: " + content);
-
                 if (reduceDustOps.equals("all")) {
-                    JButton btn = createButton(row, col, reduceDustInArea(content, 50));
+                    JButton btn = createButton(row, col,
+                            reduceDustInArea(buttonValuesArray[row][col], 50));
                     panel.add(btn);
 
                 } else {
-                    JButton btn = createButton(row, col, content);
+                    JButton btn = createButton(row, col, buttonValuesArray[row][col]);
                     panel.add(btn);
 
                 }
@@ -90,94 +76,50 @@ public class Dashboard implements DashboardProps {
         panel.removeAll();
 
         try {
-            if (!this.fileContent.equals("")) {
-                if (preloadDashboard()) {
-                    if (this.isFileAlreadyExit) {
-                        updatedRain(this.reduceDustOps);
-                        reloadContent();
-
-                    } else {
-                        Scanner fr = new Scanner(new File(this.fileContent));
-                        int row = 0;
-                        while (fr.hasNextLine()) {
-                            String[] readLine = fr.nextLine().split("\\s+");
-                            int col = 0;
-                            for (String content : readLine) {
-                                // System.out.println("Btn Content: " + content);
-
-                                JButton btn = createButton(row, col, Integer.parseInt(content));
-                                panel.add(btn);
-                                col++;
-                            }
-                            row++;
-                        }
-
-                        reloadContent();
-                        fr.close();
-                        this.isFileAlreadyExit = true;
-                    }
+            if (!fileContent.equals("")) {
+                if (this.isFileAlreadyExit) {
+                    updatedRain(this.reduceDustOps);
+                    reloadContent();
 
                 } else {
-                    new useAlert().warringAlert("File Must Be Formatted & File Size Was 10 * 20!");
+                    Scanner fr = new Scanner(new File(fileContent));
+                    int row = 0;
+                    while (fr.hasNextLine()) {
+                        String[] readLine = fr.nextLine().split("\\s+");
+                        int col = 0;
+                        for (String content : readLine) {
+                            JButton btn = createButton(row, col, Integer.parseInt(content));
+                            panel.add(btn);
+                            col++;
+                        }
+                        row++;
+                    }
 
+                    reloadContent();
+                    fr.close();
+                    this.isFileAlreadyExit = true;
                 }
 
             } else {
                 new useAlert().warringAlert("Please Select File First!");
 
             }
-
         } catch (Exception e) {
             System.err.println("Something went wrong!: " + e);
         }
     }
 
-    private boolean preloadDashboard() throws FileNotFoundException {
-        Scanner fr = new Scanner(new File(this.fileContent));
-
-        int rowComplete = 0, colComplete = 0;
-
-        int row = 0;
-        while (fr.hasNextLine()) {
-            String[] readLine = fr.nextLine().split("\\s+");
-            int col = 0;
-            for (String content : readLine) {
-                // System.out.println("Content: " + readLine);
-                // System.out.println("Content: " + content);
-
-                col++;
-                // System.out.println("Col: " + col);
-
-                colComplete = col;
-            }
-            row++;
-            // System.out.println("Row: " + row);
-
-            rowComplete = row;
-        }
-
-        System.out.printf("Row Content: %d\nCol Content: %d", rowComplete, colComplete);
-
-        fr.close();
-
-        return (rowComplete == 10 && colComplete == 20) ? true : false;
-
-    }
-
-    // Create Button
     private JButton createButton(int row, int col, int dust) {
         JButton btn = new JButton();
 
-        // Dashboard Content
-        buttonValuesArray[row][col] = dust;
-        btn.setSize(50, 50);
-
         if (dust >= 0 && dust <= 250) {
-            Color buttonColor = MainColor.getOriginalColor(dust);
+            Color buttonColor = getOriginalColor(dust);
 
             buttonColors.put(btn, buttonColor);
             buttonValues.put(btn, dust);
-            buttonPatentRate.put(btn, getPatentRate(dust));
+
+            // Dashboard Content
+            buttonValuesArray[row][col] = dust;
 
             btn.setBackground(buttonColor);
             btn.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED, buttonColor.darker(),
@@ -188,14 +130,14 @@ public class Dashboard implements DashboardProps {
 
             btn.addActionListener(e -> {
                 // Reset Button Content After Clicked Another Button
-                if (this.lastClickedButton != null) {
-                    this.lastClickedButton.setBackground(buttonColors.get(this.lastClickedButton));
-                    this.lastClickedButton.setText("");
+                if (lastClickedButton != null) {
+                    lastClickedButton.setBackground(buttonColors.get(lastClickedButton));
+                    lastClickedButton.setText("");
                 }
 
                 btn.setBackground(btn.getBackground().darker());
                 btn.setText(String.valueOf(dust));
-                this.lastClickedButton = btn;
+                lastClickedButton = btn;
 
                 this.clickedRow = currentRow;
                 this.clickedCol = currentCol;
@@ -206,13 +148,10 @@ public class Dashboard implements DashboardProps {
 
                 if (this.isActive) {
                     System.out.println("<<<<<<<<<<<<<<< Get Surrounding Content Work!");
-                    getSurroundingContent(dust, btn);
+                    getSurroundingContent(String.valueOf(dust));
 
                 } else {
-                    // Send Content In Area Was Clicked Here!
                     System.out.println(">>>>>>>>>>>>>>>> Not Get Surrounding Content!");
-
-                    this.parentPage.getStatisticData(dust, buttonPatentRate.get(btn));
 
                 }
 
@@ -223,9 +162,8 @@ public class Dashboard implements DashboardProps {
             btn.setFocusPainted(false);
             btn.setContentAreaFilled(true);
             btn.setOpaque(true);
-
         } else {
-            btn.setBackground(MainColor.access("-"));
+            btn.setBackground(new Color(0));
             btn.setEnabled(false);
         }
 
@@ -233,22 +171,41 @@ public class Dashboard implements DashboardProps {
     }
 
     private int reduceDustInArea(int dust, int percentage) {
-        return (dust >= 0 && dust <= 250) ? ((dust) - ((int) (Math.floor((dust * percentage) / 100)))) : dust;
+        return (int) (Math.floor((dust * percentage) / 100));
 
     }
 
-    private int setSelectedContent(int content, int row, int col, boolean isSurrounding) {
-        int percentage = (isSurrounding) ? 50 : 30;
-        return new Dashboard().reduceDustInArea(content, percentage);
+    private Color getOriginalColor(int value) {
+        if (value <= 50) {
+            return MainColor.access("green");
+        } else if (value <= 100) {
+            return MainColor.access("yellow");
+        } else if (value <= 150) {
+            return MainColor.access("orange");
+        } else {
+            return MainColor.access("red");
+        }
+    }
+
+    public void setSelectedContent(String content, int row, int col, boolean isSurrounding) {
+        int getContent = Integer.parseInt(content);
+
+        if (isSurrounding) {
+            buttonValuesArray[row][col] = reduceDustInArea(getContent, 50);
+
+        } else {
+            buttonValuesArray[row][col] = reduceDustInArea(getContent, 30);
+
+        }
 
     }
 
-    private void getSurroundingContent(int content, JButton btn) {
+    private void getSurroundingContent(String content) {
         if (this.clickedRow == -1 || this.clickedCol == -1) {
             return;
         }
 
-        System.out.println("Surrounding content: " + content);
+        System.out.println("Surrounding content:");
 
         // Math min, max สำหรับกันไม่ให้จำนวนเกินขนาดของ Array
         for (int i = Math.max(
@@ -260,39 +217,23 @@ public class Dashboard implements DashboardProps {
                     0, (this.clickedCol - 1)); j <= Math.min(
                             19, (this.clickedCol + 1)); j++) {
                 // System.out.printf("Col >%d :", j);
+                if ((i == this.clickedRow) && (j == this.clickedCol)) {
+                    System.out.print(buttonValuesArray[i][j] + " ");
+                    setSelectedContent(content, i, j, true);
 
-                boolean isSurrounding = (i == this.clickedRow) && (j == this.clickedCol);
-                buttonValuesArray[i][j] = setSelectedContent(buttonValuesArray[i][j], i, j, isSurrounding);
+                } else {
+                    System.out.print(buttonValuesArray[i][j] + " ");
+                    setSelectedContent(content, i, j, false);
+
+                }
             }
 
             updateDashboard(false);
+            System.out.println();
         }
     }
 
-    // Patent Rate
-    private int getPatentRate(int dust) {
-        if (dust <= 50) {
-            return randomPatentRate(0, 9);
-        } else if (dust <= 100) {
-            return randomPatentRate(10, 19);
-        } else if (dust <= 150) {
-            return randomPatentRate(20, 29);
-        } else {
-            return 30;
-        }
-
-    }
-
-    private int randomPatentRate(int min, int max) {
-        Random rand = new Random();
-        return (int) (rand.nextInt(max - min + 1) + min);
-
-    }
-
-    // Public
-    public void setFile(String _File, boolean isFileExit) {
-        this.isFileAlreadyExit = isFileExit;
-
+    public void setFile(String _File) {
         System.out.println("Dashboard Set File Work! -> " + _File);
         this.fileContent = _File;
         updateDashboard(false);
@@ -301,8 +242,6 @@ public class Dashboard implements DashboardProps {
     public void reduceDust(String options, boolean isActive) {
 
         this.isActive = isActive;
-
-        this.parentPage.resetStatistic();
 
         switch (options) {
             case "all":

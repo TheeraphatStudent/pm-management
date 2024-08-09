@@ -8,6 +8,10 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.GridLayout;
 
+import java.io.InputStream;
+import java.io.IOException;
+import java.awt.FontFormatException;
+
 // Swing
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.JPanel;
