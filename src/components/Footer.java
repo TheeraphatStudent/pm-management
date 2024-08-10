@@ -14,6 +14,7 @@ import javax.swing.JDialog;
 
 // Awt
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -45,6 +46,9 @@ import utils.useAlert;
 import utils.useButton;
 
 public class Footer extends JPanel {
+    private int minrange = 0;
+    private int maxrange = 0;
+    private boolean israndomrangechicked = false;
     private String filePath = "";
     private Page parentPage;
 
@@ -232,7 +236,7 @@ public class Footer extends JPanel {
         return panel;
     }
 
-    private JPanel createPanel(Color bgColor, String title) {
+    private JPanel createrangePanel(Color bgColor, String title, boolean ismaxrange) {
         JPanel panel = new JPanel();
         JTextPane textPane = new JTextPane();
         JTextField textField = new JTextField();
@@ -243,10 +247,18 @@ public class Footer extends JPanel {
         textPane.setBackground(bgColor);
 
         textField.setSize(100, 50);
+        textField.setText("0");
+
+        if (israndomrangechicked) {
+            if (ismaxrange) {
+                this.maxrange = Integer.parseInt(textField.getText());
+            } else {
+                this.minrange = Integer.parseInt(textField.getText());
+            }
+        }
 
         panel.setLayout(new GridBagLayout());
         panel.setBackground(bgColor);
-        // panel.setCursor(Cursor.HAND_CURSOR);
 
         gridConst.weightx = 1;
         gridConst.weighty = 0;
@@ -286,12 +298,14 @@ public class Footer extends JPanel {
         GridBagConstraints gridConst = new GridBagConstraints();
 
         JDialog dialog = new JDialog();
+
+        // Random action
         JButton random = new useButton().createButton("-", "Random", MainColor.trinary(), 100, 20);
 
         // Panel range
         JPanel rangePanel = createPanel(new GridBagLayout(), MainColor.secondary());
-        JPanel startPanel = createPanel(MainColor.primary(), "Min Peoples Range");
-        JPanel stopPanel = createPanel(MainColor.primary(), "Max Peoples Range");
+        JPanel startPanel = createrangePanel(MainColor.primary(), "Min Peoples Range", false);
+        JPanel stopPanel = createrangePanel(MainColor.primary(), "Max Peoples Range", true);
 
         dialog.setLayout(layout);
         dialog.setSize(width, height);
@@ -310,6 +324,7 @@ public class Footer extends JPanel {
             ioe.printStackTrace();
         }
 
+        // เมื่อเปลี่ยนที่สนใจอย่างอื่น จะทำให้ Dialog ปิดลง
         dialog.addWindowFocusListener(new WindowFocusListener() {
 
             @Override
@@ -326,9 +341,48 @@ public class Footer extends JPanel {
         });
 
         random.addActionListener((e -> {
-            dialog.dispose();
-            new useAlert().successAlert("Random People is \"" + 0 + "\"");
+            this.israndomrangechicked = true;
 
+            Component startComponent = startPanel.getComponent(1);
+            // System.out.println("Get Min Panel: " + startComponent);
+
+            // instanceof คือการเช็ค Component ที่อยู่ภายใน Compoonent นั้นๆ
+            // เช่น startComponent คือ Panel ที่มี Component ย่อยคือ 
+            /*
+             * JPanel panel = new JPanel();
+             * JTextPane textPane = new JTextPane();
+             * JTextField textField = new JTextField();
+             */
+            // จากการใช้ startComponent instanceof JTextField คือการเช็คว่ามี JTextField รึเปล่า
+            // ถ้ามี startComponent จะกลายเป็น ref ของ component ที่เช็ค
+            // สามารถเรียกใช้งาน Method ต่างๆได้เหมือนกับ Component นั้นๆได้
+            if (startComponent instanceof JTextField) {
+                JTextField startField = (JTextField) startComponent;
+                this.minrange = Integer.parseInt(startField.getText());
+            }
+
+            Component stopComponent = stopPanel.getComponent(1);
+            // System.out.println("Get Max Panel: " + stopComponent);
+
+            if (stopComponent instanceof JTextField) {
+                JTextField stopField = (JTextField) stopComponent;
+                this.maxrange = Integer.parseInt(stopField.getText());
+            }
+
+            
+            if(this.minrange>this.maxrange){
+                dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+                new useAlert().warringAlert("Min must be lessest Max people range");
+            }
+            else{
+                System.out.println("Min Range: " + this.minrange);
+                System.out.println("Max Range: " + this.maxrange);
+
+                // this.parentPage.setrandomrange(this.minrange, this.maxrange);
+
+                dialog.dispose();
+            }
+            // new useAlert().successAlert("Random People is \"" + 0 + "\"");
         }));
 
         gridConst.weightx = 1;

@@ -110,6 +110,13 @@ public class Page extends JFrame {
         reloadContent();
     }
 
+    public void setrandomrange(int min,int max){
+        System.out.println("Set Random Range Work!");
+        System.out.println("Min: " + min);
+        System.out.println("Max: " + max);
+
+    }
+
     // Rain
     public void reduceDustActions(String reduceOps, boolean isActive) {
         System.out.println("Reduce Dust Action: " + reduceOps);

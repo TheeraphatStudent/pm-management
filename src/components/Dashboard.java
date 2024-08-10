@@ -170,7 +170,7 @@ public class Dashboard implements DashboardProps {
 
         // Dashboard Content
         buttonValuesArray[row][col] = dust;
-        btn.setSize(50, 50);
+        // btn.setSize(50, 50);
 
         if (dust >= 0 && dust <= 250) {
             Color buttonColor = MainColor.getOriginalColor(dust);
