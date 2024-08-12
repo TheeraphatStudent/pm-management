@@ -236,7 +236,7 @@ public class Dashboard implements DashboardProps {
                     System.out.println(">>>>>>>>>>>>>>>> Not Get Surrounding Content!");
 
                     // System.out.println("Button / People: " + buttonPeoples.get(btn));
-                    this.parentPage.getStatisticData(dust, buttonPatentRate.get(btn), buttonPeoples.get(btn));
+                    this.parentPage.setStatisticData(dust, buttonPatentRate.get(btn), buttonPeoples.get(btn));
 
                 }
 
@@ -305,7 +305,7 @@ public class Dashboard implements DashboardProps {
         } else if (dust <= 150) {
             return randomRange(20, 29);
         } else {
-            return 30;
+            return randomRange(30, 50);
         }
 
     }

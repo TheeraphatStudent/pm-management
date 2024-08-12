@@ -127,8 +127,15 @@ public class Page extends JFrame {
     }
 
     // Statistic
-    public void getStatisticData(int dust, int patentRate, int people) {
+    public void setStatisticData(int dust, int patentRate, int people) {
         statistic.setStatistic(dust, patentRate, people);
+
+        reloadContent();
+
+    }
+
+    public void setStatisticData(int people) {
+        statistic.setStatistic(people);
 
         reloadContent();
 

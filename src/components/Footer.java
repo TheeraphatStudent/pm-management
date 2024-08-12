@@ -4,9 +4,7 @@ package components;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.border.BevelBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -25,6 +23,7 @@ import java.awt.LayoutManager;
 // - Event
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
+import java.lang.NumberFormatException;
 
 // nio
 import java.nio.file.Path;
@@ -44,6 +43,7 @@ import resource.environment.WindowEntryScreen;
 
 import utils.useAlert;
 import utils.useButton;
+import utils.useTextarea;
 
 public class Footer extends JPanel {
     private int minrange = 0;
@@ -75,7 +75,7 @@ public class Footer extends JPanel {
         // fileBtn.setContentAreaFilled(true);
         // fileBtn.setOpaque(true);
 
-        JTextField fileSelected = new Footer().createTextField("Select File First!", MainColor.primary(), 12);
+        JTextField fileSelected = new useTextarea().createTextField("Select File First!", MainColor.primary(), 12, false);
 
         fileBtn.addActionListener((e -> {
             String currentDir = System.getProperty("user.dir");
@@ -150,7 +150,23 @@ public class Footer extends JPanel {
         randomAction.add(random);
 
         // Random Value
-        JTextField randomValue = new Footer().createTextField(String.valueOf(0), MainColor.primary(), 12);
+        JTextField randomValue = new useTextarea().createTextField(String.valueOf(0), MainColor.primary(), 12, true);
+
+        randomValue.addActionListener(e -> {
+            String content = e.getActionCommand();
+
+            try {
+                int people = (Integer.parseInt(content));
+                System.out.println("Get Content: " + people);
+
+                this.parentPage.setStatisticData(people);
+
+            } catch (NumberFormatException err) {
+                // TODO: handle exception
+                System.out.println(err);
+            }
+
+        });
 
         gridConst.insets = new Insets(20, 20, 20, 20);
         gridConst.weightx = 1;
@@ -281,21 +297,6 @@ public class Footer extends JPanel {
         return panel;
     }
 
-    private JTextField createTextField(String text, Color color, int fontSize) {
-        JTextField textField = new JTextField();
-        textField.setFont(new Font("Arial", Font.PLAIN, fontSize));
-        textField.setText(text);
-        textField.setEditable(false);
-        textField.setBorder(
-                BorderFactory.createBevelBorder(BevelBorder.RAISED, color.darker(), color.darker().darker()));
-
-        if (color != null) {
-            textField.setBackground(color.brighter());
-
-        }
-        return textField;
-    }
-
     private JDialog createModal(LayoutManager layout, Color color, int width, int height, String title, Page page) {
         GridBagConstraints gridConst = new GridBagConstraints();
 
@@ -349,11 +350,11 @@ public class Footer extends JPanel {
             // System.out.println("Get Min Panel: " + startComponent);
 
             // instanceof คือการเช็ค Component ที่อยู่ภายใน Compoonent นั้นๆ
-            // เช่น startComponent คือ Panel ที่มี Component ย่อยคือ 
+            // เช่น startComponent คือ Panel ที่มี Component ย่อยคือ \
             /*
-             * JPanel panel = new JPanel();
-             * JTextPane textPane = new JTextPane();
-             * JTextField textField = new JTextField();
+             * JPanel panel = new JPanel(); -> Component เป้าหมาย จึงไม่นับ
+             * JTextPane textPane = new JTextPane(); -> 0
+             * JTextField textField = new JTextField(); -> 1
              */
             // จากการใช้ startComponent instanceof JTextField คือการเช็คว่ามี JTextField รึเปล่า
             // ถ้ามี startComponent จะกลายเป็น ref ของ component ที่เช็ค

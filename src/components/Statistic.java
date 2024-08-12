@@ -15,7 +15,7 @@ import javax.swing.JTextPane;
 import resource.colors.MainColor;
 
 import utils.usePanel;
-import utils.useTextPane;
+import utils.useTextarea;
 
 interface StatisticProps {
     public JPanel panel = new JPanel(new GridBagLayout());
@@ -60,7 +60,7 @@ public class Statistic implements StatisticProps {
          * n. ...
          */
         LinkedHashMap<String, String> toolsContent = new LinkedHashMap<String, String>();
-        toolsContent.put("Patient of 30%", "red");
+        toolsContent.put("Patient of 30 - 50%", "red");
         toolsContent.put("Patient of 20 - 29%", "orange");
         toolsContent.put("Patient of 10 - 19%", "yellow");
         toolsContent.put("Patient of 0 - 9%", "green");
@@ -74,7 +74,7 @@ public class Statistic implements StatisticProps {
 
             System.out.println(key);
 
-            JTextPane statisticPane = new useTextPane().createSimpleTextPane(key, MainColor.access(value));
+            JTextPane statisticPane = new useTextarea().createSimpleTextPane(key, MainColor.access(value));
             JPanel colorPanel = new usePanel().createSimplePanel(MainColor.access(value));
 
             colorPanel.add(statisticPane, gridConstColorPanel);
@@ -154,6 +154,18 @@ public class Statistic implements StatisticProps {
         this.sPatent = ((people * patentRate) / 100);
         this.sPatentRate = patentRate;
         this.sHealth = this.sPeople - this.sPatent;
+
+        updateStatistics();
+
+    }
+
+    public void setStatistic(int people) {
+        System.out.println("Set People / Area");
+        System.out.println(people);
+
+        this.sPeople = people;
+        // this.sPatent = ((people * this.sPatentRate) / 100);
+        // this.sHealth = this.sPeople - this.sPatent;
 
         updateStatistics();
 

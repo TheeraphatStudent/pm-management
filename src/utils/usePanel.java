@@ -25,8 +25,8 @@ public class usePanel {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gridConst = new GridBagConstraints();
 
-        JTextPane titlePane = new useTextPane().createSimpleTextPane(title, null);
-        JTextPane valuePane = new useTextPane().createSimpleTextPane(String.valueOf(value), null);
+        JTextPane titlePane = new useTextarea().createSimpleTextPane(title, null);
+        JTextPane valuePane = new useTextarea().createSimpleTextPane(String.valueOf(value), null);
 
         gridConst.insets = new Insets(0, 20, 0, 0);
         gridConst.gridx = 0;
