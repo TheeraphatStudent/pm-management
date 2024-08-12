@@ -65,7 +65,7 @@ public class Page extends JFrame {
 
         gridConst.gridx = 0;
         gridConst.gridy = 0;
-        gridConst.weightx = 0.6;
+        gridConst.weightx = 0.5;
         gridConst.weighty = 1;
         gridConst.insets = new Insets(20, 20, 20, 20);
         panel.add(dashboard.getDashboard(), gridConst);

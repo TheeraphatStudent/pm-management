@@ -1,11 +1,15 @@
 package utils;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
 
 import java.awt.Color;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.InputStream;
 import java.awt.GridBagConstraints;
 
 public class usePanel {
@@ -37,6 +41,18 @@ public class usePanel {
         gridConst.anchor = GridBagConstraints.EAST;
         // gridConst.fill = GridBagConstraints.NONE;
         panel.add(valuePane, gridConst);
+
+        return panel;
+    }
+
+    public JPanel createPanelImage(String imgName, Color bg) {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBackground(bg);
+
+        GridBagConstraints gridConst = new GridBagConstraints();
+        gridConst.fill = GridBagConstraints.BOTH;
+
+        panel.add(new useButton().createButton(imgName, "", 50, 50, ""), gridConst);
 
         return panel;
     }

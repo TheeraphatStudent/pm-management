@@ -2,6 +2,7 @@ package components;
 
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
@@ -18,7 +19,7 @@ import utils.useTextPane;
 
 interface StatisticProps {
     public JPanel panel = new JPanel(new GridBagLayout());
-    public JPanel toolPanel = new JPanel(new GridLayout(4, 1, 20, 20));
+    public JPanel toolPanel = new JPanel(new GridLayout(5, 1, 20, 20));
     public JPanel statisticPanel = new JPanel(new GridLayout(5, 1, 50, 20));
 
 }
@@ -40,9 +41,11 @@ public class Statistic implements StatisticProps {
     private void updateStatistics() {
         reloadContent();
 
-        panel.setBackground(MainColor.getOriginalColor(this.sDust));
-        toolPanel.setBackground(MainColor.getOriginalColor(this.sDust));
-        statisticPanel.setBackground(MainColor.getOriginalColor(this.sDust));
+        Color bgContent = MainColor.getOriginalColor(this.sDust);
+
+        panel.setBackground(bgContent);
+        toolPanel.setBackground(bgContent);
+        statisticPanel.setBackground(bgContent);
 
         GridBagConstraints gridConst = new GridBagConstraints();
         GridBagConstraints gridConstColorPanel = new GridBagConstraints();
@@ -61,6 +64,9 @@ public class Statistic implements StatisticProps {
         toolsContent.put("Patient of 20 - 29%", "orange");
         toolsContent.put("Patient of 10 - 19%", "yellow");
         toolsContent.put("Patient of 0 - 9%", "green");
+
+        JPanel statisticImage = new usePanel().createPanelImage(getStatisticImage(this.sDust), bgContent.darker());
+        toolPanel.add(statisticImage);
 
         for (Map.Entry<String, String> entry : toolsContent.entrySet()) {
             String key = entry.getKey();
@@ -122,6 +128,21 @@ public class Statistic implements StatisticProps {
 
         panel.revalidate();
         panel.repaint();
+
+    }
+
+    private String getStatisticImage(int dust) {
+        String result = "health";
+
+        if (dust <= 50) {
+            return result += 1;
+        } else if (dust <= 100) {
+            return result += 2;
+        } else if (dust <= 150) {
+            return result += 3;
+        } else {
+            return result += 4;
+        }
 
     }
 
