@@ -32,7 +32,7 @@ public class Page extends JFrame {
 
     Dashboard dashboard = new Dashboard(this);
     Statistic statistic = new Statistic();
-    Footer footer;
+    Footer footer = new Footer(MainColor.primary(), this);
 
     public Page() {
         setTitle("PM 2.5 Reporter");
@@ -88,8 +88,6 @@ public class Page extends JFrame {
         gridConst.weighty = 0.1;
         gridConst.insets = new Insets(0, 20, 20, 20);
 
-        // Passing ref from footer to parent frame
-        footer = new Footer(MainColor.primary(), this);
         add(footer, gridConst);
 
         new WindowClosingFrameEvent(this, new EntryPage());
@@ -115,6 +113,8 @@ public class Page extends JFrame {
         System.out.println("Min: " + min);
         System.out.println("Max: " + max);
 
+        dashboard.setPeopleRange(min, max);
+
     }
 
     // Rain
@@ -127,8 +127,8 @@ public class Page extends JFrame {
     }
 
     // Statistic
-    public void getStatisticData(int dust, int patentRate) {
-        statistic.setStatistic(dust, patentRate);
+    public void getStatisticData(int dust, int patentRate, int people) {
+        statistic.setStatistic(dust, patentRate, people);
 
         reloadContent();
 

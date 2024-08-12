@@ -25,7 +25,7 @@ interface StatisticProps {
 }
 
 public class Statistic implements StatisticProps {
-    public int sPeople = 5000;
+    public int sPeople = 0;
     public int sDust = 0;
     public int sPatent = 0;
     public int sPatentRate = 0;
@@ -147,21 +147,20 @@ public class Statistic implements StatisticProps {
     }
 
     // Public
-    public void setStatistic(int dust, int patentRate) {
-        int patent = ((this.sPeople * patentRate) / 100);
+    public void setStatistic(int dust, int patentRate, int people) {
 
-        // this.sPeople
+        this.sPeople = people;
         this.sDust = dust;
-        this.sPatent = patent;
+        this.sPatent = ((people * patentRate) / 100);
         this.sPatentRate = patentRate;
-        this.sHealth = this.sPeople - patent;
+        this.sHealth = this.sPeople - this.sPatent;
 
         updateStatistics();
 
     }
 
     public void resetStatistic() {
-        // this.sPeople = 0;
+        this.sPeople = 0;
         this.sDust = 0;
         this.sPatent = 0;
         this.sPatentRate = 0;

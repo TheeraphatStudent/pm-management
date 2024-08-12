@@ -57,8 +57,8 @@ public class Footer extends JPanel {
     public Footer() {
     }
 
-    public Footer(Color getColor, Page parentPage) {
-        this.parentPage = parentPage;
+    public Footer(Color getColor, Page page) {
+        this.parentPage = page;
         setBackground(getColor.brighter());
         setLayout(new GridLayout(1, 4, 20, 0));
 
@@ -127,13 +127,14 @@ public class Footer extends JPanel {
         filePanel.add(fileSelected, gridConst);
         add(filePanel);
 
-        // Random Panel
+        // Random
         JPanel randomPanel = createPanel(new GridBagLayout(), MainColor.primary());
 
         // Action
         JDialog dialogRange = new Footer().createModal(new GridBagLayout(), MainColor.secondary(), 500, 250,
-                "Random Peoples Range");
+                "Random Peoples Range", this.parentPage);
         JPanel randomAction = createPanel(new GridLayout(1, 2, 20, 20), MainColor.primary());
+
         JButton randomRange = new useButton().createButton("-", "Random Range", MainColor.trinary(), 100, 20);
         JButton random = new useButton().createButton("-", "Random", MainColor.trinary(), 100, 20);
 
@@ -148,7 +149,8 @@ public class Footer extends JPanel {
         randomAction.add(randomRange);
         randomAction.add(random);
 
-        JTextField randomValue = new Footer().createTextField("0", MainColor.primary(), 12);
+        // Random Value
+        JTextField randomValue = new Footer().createTextField(String.valueOf(0), MainColor.primary(), 12);
 
         gridConst.insets = new Insets(20, 20, 20, 20);
         gridConst.weightx = 1;
@@ -294,7 +296,7 @@ public class Footer extends JPanel {
         return textField;
     }
 
-    private JDialog createModal(LayoutManager layout, Color color, int width, int height, String title) {
+    private JDialog createModal(LayoutManager layout, Color color, int width, int height, String title, Page page) {
         GridBagConstraints gridConst = new GridBagConstraints();
 
         JDialog dialog = new JDialog();
@@ -369,7 +371,6 @@ public class Footer extends JPanel {
                 this.maxrange = Integer.parseInt(stopField.getText());
             }
 
-            
             if(this.minrange>this.maxrange){
                 dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
                 new useAlert().warringAlert("Min must be lessest Max people range");
@@ -378,7 +379,7 @@ public class Footer extends JPanel {
                 System.out.println("Min Range: " + this.minrange);
                 System.out.println("Max Range: " + this.maxrange);
 
-                // this.parentPage.setrandomrange(this.minrange, this.maxrange);
+                page.setrandomrange(this.minrange, this.maxrange);
 
                 dialog.dispose();
             }

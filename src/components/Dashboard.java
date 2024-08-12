@@ -28,6 +28,7 @@ interface DashboardProps {
     public Map<JButton, Color> buttonColors = new HashMap<>();
     public Map<JButton, Integer> buttonValues = new HashMap<>();
     public Map<JButton, Integer> buttonPatentRate = new HashMap<>();
+    public Map<JButton, Integer> buttonPeoples = new HashMap<>();
     public int[][] buttonValuesArray = new int[10][20];
     public boolean simulateAreaActive = false;
 
@@ -44,6 +45,12 @@ public class Dashboard implements DashboardProps {
     private boolean isFileAlreadyExit = false;
     private boolean isActive = false;
     private Page parentPage;
+
+    // People
+    private boolean isAlreadyUpdatePeople = false;
+    private boolean isUpdatePeople = false;
+    private int minrange = 0;
+    private int maxrange = 0;
 
     public Dashboard(Page page) {
         this.parentPage = page;
@@ -69,16 +76,17 @@ public class Dashboard implements DashboardProps {
             for (int col = 0; col < 20; col++) {
                 int content = buttonValuesArray[row][col];
                 // System.out.println("Content: " + content);
+                JButton btn;
 
                 if (reduceDustOps.equals("all")) {
-                    JButton btn = createButton(row, col, reduceDustInArea(content, 50));
-                    panel.add(btn);
+                    btn = createButton(row, col, reduceDustInArea(content, 50));
 
                 } else {
-                    JButton btn = createButton(row, col, content);
-                    panel.add(btn);
+                    btn = createButton(row, col, content);
 
                 }
+
+                panel.add(btn);
             }
         }
 
@@ -92,11 +100,7 @@ public class Dashboard implements DashboardProps {
         try {
             if (!this.fileContent.equals("")) {
                 if (preloadDashboard()) {
-                    if (this.isFileAlreadyExit) {
-                        updatedRain(this.reduceDustOps);
-                        reloadContent();
-
-                    } else {
+                    if (!this.isFileAlreadyExit || !simulate) {
                         Scanner fr = new Scanner(new File(this.fileContent));
                         int row = 0;
                         while (fr.hasNextLine()) {
@@ -115,6 +119,9 @@ public class Dashboard implements DashboardProps {
                         reloadContent();
                         fr.close();
                         this.isFileAlreadyExit = true;
+                    } else {
+                        updatedRain(this.reduceDustOps);
+                        reloadContent();
                     }
 
                 } else {
@@ -179,6 +186,22 @@ public class Dashboard implements DashboardProps {
             buttonValues.put(btn, dust);
             buttonPatentRate.put(btn, getPatentRate(dust));
 
+            // Set Default People
+            if (!buttonPeoples.containsKey(btn)) {
+                int people = 5000;
+                if (this.isUpdatePeople && this.isFileAlreadyExit) {
+                    if (buttonPeoples.containsKey(btn)) {
+                        people = buttonPeoples.get(btn);
+
+                    } else {
+                        people = randomRange(this.minrange, this.maxrange);
+
+                    }
+                }
+
+                buttonPeoples.put(btn, people);
+            }
+
             btn.setBackground(buttonColor);
             btn.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED, buttonColor.darker(),
                     buttonColor.darker().darker()));
@@ -212,22 +235,24 @@ public class Dashboard implements DashboardProps {
                     // Send Content In Area Was Clicked Here!
                     System.out.println(">>>>>>>>>>>>>>>> Not Get Surrounding Content!");
 
-                    this.parentPage.getStatisticData(dust, buttonPatentRate.get(btn));
+                    // System.out.println("Button / People: " + buttonPeoples.get(btn));
+                    this.parentPage.getStatisticData(dust, buttonPatentRate.get(btn), buttonPeoples.get(btn));
 
                 }
 
             });
 
             btn.setToolTipText(String.valueOf(dust));
-            btn.setPreferredSize(new Dimension(10, 20));
-            btn.setFocusPainted(false);
-            btn.setContentAreaFilled(true);
-            btn.setOpaque(true);
 
         } else {
             btn.setBackground(MainColor.access("-"));
             btn.setEnabled(false);
         }
+
+        btn.setPreferredSize(new Dimension(30, 30));
+        btn.setFocusPainted(false);
+        btn.setContentAreaFilled(true);
+        btn.setOpaque(true);
 
         return btn;
     }
@@ -265,42 +290,69 @@ public class Dashboard implements DashboardProps {
                 buttonValuesArray[i][j] = setSelectedContent(buttonValuesArray[i][j], i, j, isSurrounding);
             }
 
-            updateDashboard(false);
+            updateDashboard(true);
         }
     }
 
     // Patent Rate
     private int getPatentRate(int dust) {
+        // System.out.println("Patent Rate Work!");
+
         if (dust <= 50) {
-            return randomPatentRate(0, 9);
+            return randomRange(0, 9);
         } else if (dust <= 100) {
-            return randomPatentRate(10, 19);
+            return randomRange(10, 19);
         } else if (dust <= 150) {
-            return randomPatentRate(20, 29);
+            return randomRange(20, 29);
         } else {
             return 30;
         }
 
     }
 
-    private int randomPatentRate(int min, int max) {
+    private int randomRange(int min, int max) {
         Random rand = new Random();
-        return (int) (rand.nextInt(max - min + 1) + min);
+        int result = (int) (rand.nextInt(max - min + 1) + min);
+
+        // System.out.println("Result: " + result);
+
+        return result;
 
     }
 
     // Public
+    public void setPeopleRange(int min, int max) {
+        System.out.println("Set People Range On Dashboard Work!");
+        this.minrange = min;
+        this.maxrange = max;
+
+        System.out.println("Min: " + this.minrange);
+        System.out.println("Max: " + this.maxrange);
+
+        // Update People
+        this.isUpdatePeople = true;
+        this.isAlreadyUpdatePeople = true;
+
+        updateDashboard(false);
+
+    }
+
     public void setFile(String _File, boolean isFileExit) {
         this.isFileAlreadyExit = isFileExit;
+        buttonPeoples.clear();
 
         System.out.println("Dashboard Set File Work! -> " + _File);
         this.fileContent = _File;
+
+        this.isUpdatePeople = false;
+        this.isAlreadyUpdatePeople = false;
         updateDashboard(false);
     }
 
     public void reduceDust(String options, boolean isActive) {
-
         this.isActive = isActive;
+        this.isUpdatePeople = true;
+        this.isAlreadyUpdatePeople = true;
 
         this.parentPage.resetStatistic();
 
