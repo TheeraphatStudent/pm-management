@@ -43,6 +43,7 @@ import resource.environment.WindowEntryScreen;
 
 import utils.useAlert;
 import utils.useButton;
+import utils.useRandom;
 import utils.useTextarea;
 
 public class Footer extends JPanel {
@@ -51,6 +52,7 @@ public class Footer extends JPanel {
     private boolean israndomrangechicked = false;
     private String filePath = "";
     private Page parentPage;
+    private int randomPeopleValue = 0;
 
     private boolean artificialRainState = false;
 
@@ -75,7 +77,8 @@ public class Footer extends JPanel {
         // fileBtn.setContentAreaFilled(true);
         // fileBtn.setOpaque(true);
 
-        JTextField fileSelected = new useTextarea().createTextField("Select File First!", MainColor.primary(), 12, false);
+        JTextField fileSelected = new useTextarea().createTextField("Select File First!", MainColor.primary(), 12,
+                false);
 
         fileBtn.addActionListener((e -> {
             String currentDir = System.getProperty("user.dir");
@@ -128,6 +131,9 @@ public class Footer extends JPanel {
         add(filePanel);
 
         // Random
+        JTextField randomValue = new useTextarea().createTextField(String.valueOf(0),
+                MainColor.primary(), 12, true);
+
         JPanel randomPanel = createPanel(new GridBagLayout(), MainColor.primary());
 
         // Action
@@ -137,6 +143,19 @@ public class Footer extends JPanel {
 
         JButton randomRange = new useButton().createButton("-", "Random Range", MainColor.trinary(), 100, 20);
         JButton random = new useButton().createButton("-", "Random", MainColor.trinary(), 100, 20);
+
+        random.addActionListener(e -> {
+            System.out.println("Random Work!");
+            int randomPeoplePerArea = new useRandom().randomRange(0, 5000);
+            System.out.println("Random People Per Area: " + randomPeoplePerArea);
+
+            this.randomPeopleValue = randomPeoplePerArea;
+
+            this.parentPage.setStatisticData(this.randomPeopleValue);
+
+            randomValue.setText(String.valueOf(randomPeoplePerArea));
+
+        });
 
         randomRange.addActionListener((e -> {
             dialogRange.setVisible(true);
@@ -148,9 +167,6 @@ public class Footer extends JPanel {
 
         randomAction.add(randomRange);
         randomAction.add(random);
-
-        // Random Value
-        JTextField randomValue = new useTextarea().createTextField(String.valueOf(0), MainColor.primary(), 12, true);
 
         randomValue.addActionListener(e -> {
             String content = e.getActionCommand();
@@ -356,7 +372,8 @@ public class Footer extends JPanel {
              * JTextPane textPane = new JTextPane(); -> 0
              * JTextField textField = new JTextField(); -> 1
              */
-            // จากการใช้ startComponent instanceof JTextField คือการเช็คว่ามี JTextField รึเปล่า
+            // จากการใช้ startComponent instanceof JTextField คือการเช็คว่ามี JTextField
+            // รึเปล่า
             // ถ้ามี startComponent จะกลายเป็น ref ของ component ที่เช็ค
             // สามารถเรียกใช้งาน Method ต่างๆได้เหมือนกับ Component นั้นๆได้
             if (startComponent instanceof JTextField) {
@@ -372,11 +389,10 @@ public class Footer extends JPanel {
                 this.maxrange = Integer.parseInt(stopField.getText());
             }
 
-            if(this.minrange>this.maxrange){
+            if (this.minrange > this.maxrange) {
                 dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
                 new useAlert().warringAlert("Min must be lessest Max people range");
-            }
-            else{
+            } else {
                 System.out.println("Min Range: " + this.minrange);
                 System.out.println("Max Range: " + this.maxrange);
 

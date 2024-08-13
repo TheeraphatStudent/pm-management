@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.Scanner;
 
 import javax.swing.BorderFactory;
@@ -22,6 +21,7 @@ import javax.swing.JPanel;
 import resource.colors.MainColor;
 
 import utils.useAlert;
+import utils.useRandom;
 
 interface DashboardProps {
     public JPanel panel = new JPanel(new GridLayout(10, 20, 2, 2));
@@ -194,7 +194,7 @@ public class Dashboard implements DashboardProps {
                         people = buttonPeoples.get(btn);
 
                     } else {
-                        people = randomRange(this.minrange, this.maxrange);
+                        people = new useRandom().randomRange(this.minrange, this.maxrange);
 
                     }
                 }
@@ -299,24 +299,14 @@ public class Dashboard implements DashboardProps {
         // System.out.println("Patent Rate Work!");
 
         if (dust <= 50) {
-            return randomRange(0, 9);
+            return new useRandom().randomRange(0, 9);
         } else if (dust <= 100) {
-            return randomRange(10, 19);
+            return new useRandom().randomRange(10, 19);
         } else if (dust <= 150) {
-            return randomRange(20, 29);
+            return new useRandom().randomRange(20, 29);
         } else {
-            return randomRange(30, 50);
+            return new useRandom().randomRange(30, 50);
         }
-
-    }
-
-    private int randomRange(int min, int max) {
-        Random rand = new Random();
-        int result = (int) (rand.nextInt(max - min + 1) + min);
-
-        // System.out.println("Result: " + result);
-
-        return result;
 
     }
 
