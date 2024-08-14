@@ -117,6 +117,11 @@ public class Page extends JFrame {
 
     }
 
+    public void setFileFeedback(boolean feedback) {
+        footer.getFileFeedback(feedback);
+
+    }
+
     // Rain
     public void reduceDustActions(String reduceOps, boolean isActive) {
         System.out.println("Reduce Dust Action: " + reduceOps);
@@ -129,13 +134,6 @@ public class Page extends JFrame {
     // Statistic
     public void setStatisticData(int dust, int patentRate, int people) {
         statistic.setStatistic(dust, patentRate, people);
-
-        reloadContent();
-
-    }
-
-    public void setStatisticData(int people) {
-        statistic.setStatistic(people);
 
         reloadContent();
 

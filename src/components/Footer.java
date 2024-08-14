@@ -43,231 +43,36 @@ import resource.environment.WindowEntryScreen;
 
 import utils.useAlert;
 import utils.useButton;
+import utils.usePanel;
 import utils.useRandom;
 import utils.useTextarea;
 
 public class Footer extends JPanel {
+    // Protected - สามารถทำให้ Class ที่อยูใน Package เดียวกันสามารถเข้าถึงได้
+    protected String filePath = "";
+    protected boolean isFileError = false;
+
     private int minrange = 0;
     private int maxrange = 0;
     private boolean israndomrangechicked = false;
-    private String filePath = "";
-    private Page parentPage;
-    private int randomPeopleValue = 0;
 
-    private boolean artificialRainState = false;
+    protected boolean artificialRainState = false;
 
     public Footer() {
     }
 
     public Footer(Color getColor, Page page) {
-        this.parentPage = page;
         setBackground(getColor.brighter());
         setLayout(new GridLayout(1, 4, 20, 0));
 
-        // File Panel
-        JPanel filePanel = createPanel(new GridBagLayout(), MainColor.primary());
-        filePanel.setBackground(MainColor.primary());
+        FilePanel filePanel = new FilePanel(page);
+        add(filePanel.getPanel());
 
-        GridBagConstraints gridConst = new GridBagConstraints();
-        gridConst.fill = GridBagConstraints.BOTH;
+        RandomPanel randomPanel = new RandomPanel(page);
+        add(randomPanel.getPanel());
 
-        JButton fileBtn = new useButton().createButton("-", "Select File", MainColor.trinary(), 100, 50);
-        fileBtn.setToolTipText("Select dust .txt file");
-        // fileBtn.setFocusPainted(false);
-        // fileBtn.setContentAreaFilled(true);
-        // fileBtn.setOpaque(true);
-
-        JTextField fileSelected = new useTextarea().createTextField("Select File First!", MainColor.primary(), 12,
-                false);
-
-        fileBtn.addActionListener((e -> {
-            String currentDir = System.getProperty("user.dir");
-            Path destDir = Paths.get(currentDir).getParent().getParent();
-
-            JFileChooser chooserFile = new JFileChooser(String.valueOf(destDir));
-            FileNameExtensionFilter restrict = new FileNameExtensionFilter(".txt", "txt");
-            chooserFile.setFileFilter(restrict);
-            chooserFile.setDialogTitle("Select a dust file!");
-            // chooserFile.setControlButtonsAreShown(true);
-
-            JFrame frame = new JFrame();
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-            // อ่าน File ที่ Resource โดยจะเข้าถึงผ่าน class
-            try (InputStream is = Footer.class.getClassLoader().getResourceAsStream("resource/images/file.png")) {
-                if (is == null) {
-                    System.out.println("Image not found");
-                } else {
-                    BufferedImage iconImage = ImageIO.read(is);
-                    frame.setIconImage(iconImage);
-                }
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            }
-
-            int content = chooserFile.showSaveDialog(frame);
-
-            if (content == JFileChooser.APPROVE_OPTION) {
-                this.filePath = chooserFile.getSelectedFile().getAbsolutePath().replace("\\", "/");
-                fileSelected.setText(filePath);
-                System.out.println("Chosen File: " + this.filePath);
-
-                // ส่งค่ากลับไปที่ Parent Component
-                this.parentPage.setFilePathInDashboard(this.filePath, false);
-            }
-
-            frame.dispose();
-        }));
-
-        gridConst.weightx = 0;
-        gridConst.weighty = 1;
-        gridConst.insets = new Insets(20, 20, 20, 20);
-        filePanel.add(fileBtn, gridConst);
-
-        gridConst.weightx = 1;
-        gridConst.weighty = 1;
-        gridConst.insets = new Insets(20, 0, 20, 20);
-        filePanel.add(fileSelected, gridConst);
-        add(filePanel);
-
-        // Random
-        JTextField randomValue = new useTextarea().createTextField(String.valueOf(0),
-                MainColor.primary(), 12, true);
-
-        JPanel randomPanel = createPanel(new GridBagLayout(), MainColor.primary());
-
-        // Action
-        JDialog dialogRange = new Footer().createModal(new GridBagLayout(), MainColor.secondary(), 500, 250,
-                "Random Peoples Range", this.parentPage);
-        JPanel randomAction = createPanel(new GridLayout(1, 2, 20, 20), MainColor.primary());
-
-        JButton randomRange = new useButton().createButton("-", "Random Range", MainColor.trinary(), 100, 20);
-        JButton random = new useButton().createButton("-", "Random", MainColor.trinary(), 100, 20);
-
-        random.addActionListener(e -> {
-            System.out.println("Random Work!");
-            int randomPeoplePerArea = new useRandom().randomRange(0, 5000);
-            System.out.println("Random People Per Area: " + randomPeoplePerArea);
-
-            this.randomPeopleValue = randomPeoplePerArea;
-
-            this.parentPage.setStatisticData(this.randomPeopleValue);
-
-            randomValue.setText(String.valueOf(randomPeoplePerArea));
-
-        });
-
-        randomRange.addActionListener((e -> {
-            dialogRange.setVisible(true);
-
-        }));
-
-        randomPanel.setBackground(MainColor.primary());
-        randomAction.setBackground(MainColor.primary());
-
-        randomAction.add(randomRange);
-        randomAction.add(random);
-
-        randomValue.addActionListener(e -> {
-            String content = e.getActionCommand();
-
-            try {
-                int people = (Integer.parseInt(content));
-                System.out.println("Get Content: " + people);
-
-                this.parentPage.setStatisticData(people);
-
-            } catch (NumberFormatException err) {
-                // TODO: handle exception
-                System.out.println(err);
-            }
-
-        });
-
-        gridConst.insets = new Insets(20, 20, 20, 20);
-        gridConst.weightx = 1;
-        gridConst.weighty = 1;
-        gridConst.gridx = 0;
-        gridConst.gridy = 0;
-        gridConst.fill = GridBagConstraints.BOTH;
-        randomPanel.add(randomValue, gridConst);
-
-        gridConst.insets = new Insets(0, 20, 20, 20);
-        gridConst.weightx = 1;
-        gridConst.weighty = 1;
-        gridConst.gridx = 0;
-        gridConst.gridy = 1;
-        gridConst.fill = GridBagConstraints.BOTH;
-        randomPanel.add(randomAction, gridConst);
-
-        add(randomPanel);
-
-        // Rain Panel
-        JPanel rainPanel = new Footer().createPanel(new GridBagLayout(), MainColor.primary());
-        JButton rainSimulate = new useButton().createButton("rain", "", MainColor.trinary(), 60, 60);
-
-        rainSimulate.addActionListener((e -> {
-            this.parentPage.reduceDustActions("all", false);
-
-        }));
-
-        // Artificial Rain
-        JButton artificialRainSimulate = new useButton().createButton("air", "", MainColor.trinary(), 60, 60);
-
-        artificialRainSimulate.addActionListener((e -> {
-            if (!artificialRainState) {
-                artificialRainSimulate.setBackground(MainColor.access("orange"));
-                this.parentPage.reduceDustActions("area", true);
-
-            } else {
-                artificialRainSimulate.setBackground(MainColor.trinary());
-                this.parentPage.reduceDustActions("area", false);
-
-            }
-
-            this.artificialRainState = !this.artificialRainState;
-
-        }));
-
-        // Back
-        JButton back = new useButton().createButton("-", "Back", MainColor.access("red"), 0, 0, "hand", parentPage,
-                "entry");
-
-        gridConst.insets = new Insets(20, 20, 20, 10);
-        gridConst.weightx = 0.3;
-        gridConst.weighty = 1;
-        gridConst.gridx = 0;
-        gridConst.fill = GridBagConstraints.BOTH;
-        rainPanel.add(rainSimulate, gridConst);
-
-        gridConst.insets = new Insets(20, 10, 20, 20);
-        gridConst.weightx = 0.3;
-        gridConst.weighty = 1;
-        gridConst.gridx = 1;
-        gridConst.fill = GridBagConstraints.BOTH;
-        rainPanel.add(artificialRainSimulate, gridConst);
-
-        gridConst.insets = new Insets(20, 0, 20, 20);
-        gridConst.weightx = 0.3;
-        gridConst.weighty = 1;
-        gridConst.gridx = 2;
-        gridConst.fill = GridBagConstraints.BOTH;
-        rainPanel.add(back, gridConst);
-
-        add(rainPanel);
-    }
-
-    public String getFile() {
-        return this.filePath;
-    }
-
-    private JPanel createPanel(LayoutManager getLayout, Color bgColor) {
-        JPanel panel = new JPanel();
-        panel.setLayout(getLayout);
-        panel.setBackground(bgColor);
-        // panel.setCursor(Cursor.HAND_CURSOR);
-
-        return panel;
+        RainPanel rainPanel = new RainPanel(page);
+        add(rainPanel.getPanel());
     }
 
     private JPanel createrangePanel(Color bgColor, String title, boolean ismaxrange) {
@@ -313,7 +118,8 @@ public class Footer extends JPanel {
         return panel;
     }
 
-    private JDialog createModal(LayoutManager layout, Color color, int width, int height, String title, Page page) {
+    protected JDialog createRandomModal(LayoutManager layout, Color color, int width, int height, String title,
+            Page page) {
         GridBagConstraints gridConst = new GridBagConstraints();
 
         JDialog dialog = new JDialog();
@@ -322,7 +128,7 @@ public class Footer extends JPanel {
         JButton random = new useButton().createButton("-", "Random", MainColor.trinary(), 100, 20);
 
         // Panel range
-        JPanel rangePanel = createPanel(new GridBagLayout(), MainColor.secondary());
+        JPanel rangePanel = new usePanel().createSimplePanelWithLayout(new GridBagLayout(), MainColor.secondary());
         JPanel startPanel = createrangePanel(MainColor.primary(), "Min Peoples Range", false);
         JPanel stopPanel = createrangePanel(MainColor.primary(), "Max Peoples Range", true);
 
@@ -373,7 +179,6 @@ public class Footer extends JPanel {
              * JTextField textField = new JTextField(); -> 1
              */
             // จากการใช้ startComponent instanceof JTextField คือการเช็คว่ามี JTextField
-            // รึเปล่า
             // ถ้ามี startComponent จะกลายเป็น ref ของ component ที่เช็ค
             // สามารถเรียกใช้งาน Method ต่างๆได้เหมือนกับ Component นั้นๆได้
             if (startComponent instanceof JTextField) {
@@ -425,6 +230,244 @@ public class Footer extends JPanel {
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
         return dialog;
+    }
+
+    // >>>>>>>>>>>>>>>>>>>> Get File Feedback From Dashboard
+    public void getFileFeedback(boolean feedback) {
+        this.isFileError = feedback;
+
+    }
+
+}
+
+class RandomPanel extends Footer {
+    private JPanel panel = new usePanel().createSimplePanelWithLayout(new GridBagLayout(), MainColor.primary());
+
+    public RandomPanel(Page parentPage) {
+        GridBagConstraints gridConst = new GridBagConstraints();
+
+        // Random Value
+        JTextField randomValue = new useTextarea().createTextField(String.valueOf(0),
+                MainColor.primary(), 12, true);
+
+        // Action
+        JDialog dialogRange = new Footer().createRandomModal(new GridBagLayout(), MainColor.secondary(), 500, 250,
+                "Random Peoples Range", parentPage);
+        JPanel randomAction = new usePanel().createSimplePanelWithLayout(new GridLayout(1, 2, 20, 20),
+                MainColor.primary());
+
+        // Button
+        JButton randomRange = new useButton().createButton("-", "Random Range", MainColor.trinary(), 100, 20);
+        JButton random = new useButton().createButton("-", "Random", MainColor.trinary(), 100, 20);
+
+        random.addActionListener(e -> {
+            System.out.println("Random Work!");
+            int randomPeoplePerArea = new useRandom().randomRange(0, 5000);
+            System.out.println("Random People Per Area: " + randomPeoplePerArea);
+
+            if (this.isFileError) {
+                parentPage.setrandomrange(0, 0);
+
+            } else {
+                parentPage.setrandomrange(0, randomPeoplePerArea);
+
+            }
+
+            // Set new random value content
+            randomValue.setText(String.valueOf(randomPeoplePerArea));
+        });
+
+        randomRange.addActionListener(e -> dialogRange.setVisible(true));
+
+        panel.setBackground(MainColor.primary());
+        randomAction.setBackground(MainColor.primary());
+
+        randomAction.add(randomRange);
+        randomAction.add(random);
+
+        // >>>>>>>>>>>>>>>>>>>> Random value >>>>>>>>>>>>>>>>>>>>
+        randomValue.addActionListener(e -> {
+            String content = e.getActionCommand();
+
+            try {
+                int people = Integer.parseInt(content);
+                System.out.println("Get Content: " + people);
+
+                if (this.isFileError) {
+                    parentPage.setrandomrange(0, 0);
+
+                } else {
+                    parentPage.setrandomrange(0, people);
+
+                }
+
+            } catch (NumberFormatException err) {
+                // TODO: handle exception
+                System.out.println(err);
+            }
+        });
+
+        gridConst.insets = new Insets(20, 20, 20, 20);
+        gridConst.weightx = 1;
+        gridConst.weighty = 1;
+        gridConst.gridx = 0;
+        gridConst.gridy = 0;
+        gridConst.fill = GridBagConstraints.BOTH;
+        panel.add(randomValue, gridConst);
+
+        gridConst.insets = new Insets(0, 20, 20, 20);
+        gridConst.weightx = 1;
+        gridConst.weighty = 1;
+        gridConst.gridx = 0;
+        gridConst.gridy = 1;
+        gridConst.fill = GridBagConstraints.BOTH;
+        panel.add(randomAction, gridConst);
+    }
+
+    public JPanel getPanel() {
+        return this.panel;
+    }
+}
+
+class FilePanel extends Footer {
+    private JPanel filePanel = new usePanel().createSimplePanelWithLayout(new GridBagLayout(), MainColor.primary());
+
+    public FilePanel(Page parentPage) {
+        // >>>>>>>>>>>>>>>>>>>> File Panel >>>>>>>>>>>>>>>>>>>>
+        filePanel.setBackground(MainColor.primary());
+
+        GridBagConstraints gridConst = new GridBagConstraints();
+        gridConst.fill = GridBagConstraints.BOTH;
+
+        JButton fileBtn = new useButton().createButton("-", "Select File", MainColor.trinary(), 100, 50);
+        fileBtn.setToolTipText("Select dust .txt file");
+        // fileBtn.setFocusPainted(false);
+        // fileBtn.setContentAreaFilled(true);
+        // fileBtn.setOpaque(true);
+
+        JTextField fileSelected = new useTextarea().createTextField("Select File First!", MainColor.primary(), 12,
+                false);
+
+        fileBtn.addActionListener((e -> {
+            String currentDir = System.getProperty("user.dir");
+            Path destDir = Paths.get(currentDir).getParent().getParent();
+
+            JFileChooser chooserFile = new JFileChooser(String.valueOf(destDir));
+            FileNameExtensionFilter restrict = new FileNameExtensionFilter(".txt", "txt");
+            chooserFile.setFileFilter(restrict);
+            chooserFile.setDialogTitle("Select a dust file!");
+            // chooserFile.setControlButtonsAreShown(true);
+
+            JFrame frame = new JFrame();
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+            // อ่าน File ที่ Resource โดยจะเข้าถึงผ่าน class
+            try (InputStream is = Footer.class.getClassLoader().getResourceAsStream("resource/images/file.png")) {
+                if (is == null) {
+                    System.out.println("Image not found");
+                } else {
+                    BufferedImage iconImage = ImageIO.read(is);
+                    frame.setIconImage(iconImage);
+                }
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+
+            int content = chooserFile.showSaveDialog(frame);
+
+            if (content == JFileChooser.APPROVE_OPTION) {
+                this.filePath = chooserFile.getSelectedFile().getAbsolutePath().replace("\\", "/");
+                fileSelected.setText(filePath);
+                System.out.println("Chosen File: " + this.filePath);
+
+                // ส่งค่ากลับไปที่ Parent Component
+                parentPage.setFilePathInDashboard(this.filePath, false);
+            }
+
+            frame.dispose();
+        }));
+
+        gridConst.weightx = 0;
+        gridConst.weighty = 1;
+        gridConst.insets = new Insets(20, 20, 20, 20);
+        filePanel.add(fileBtn, gridConst);
+
+        gridConst.weightx = 1;
+        gridConst.weighty = 1;
+        gridConst.insets = new Insets(20, 0, 20, 20);
+        filePanel.add(fileSelected, gridConst);
+
+    }
+
+    public JPanel getPanel() {
+        return this.filePanel;
+
+    }
+
+}
+
+class RainPanel extends Footer {
+    JPanel rainPanel = new usePanel().createSimplePanelWithLayout(new GridBagLayout(), MainColor.primary());
+
+    public RainPanel(Page parentPage) {
+        // >>>>>>>>>>>>>>>>>>>> Rain Panel >>>>>>>>>>>>>>>>>>>>
+        GridBagConstraints gridConst = new GridBagConstraints();
+
+        JButton rainSimulate = new useButton().createButton("rain", "", MainColor.trinary(), 60, 60);
+
+        rainSimulate.addActionListener((e -> {
+            parentPage.reduceDustActions("all", false);
+
+        }));
+
+        // Artificial Rain
+        JButton artificialRainSimulate = new useButton().createButton("air", "", MainColor.trinary(), 60, 60);
+
+        artificialRainSimulate.addActionListener((e -> {
+            if (!this.artificialRainState) {
+                artificialRainSimulate.setBackground(MainColor.access("orange"));
+                parentPage.reduceDustActions("area", true);
+
+            } else {
+                artificialRainSimulate.setBackground(MainColor.trinary());
+                parentPage.reduceDustActions("area", false);
+
+            }
+
+            this.artificialRainState = !this.artificialRainState;
+
+        }));
+
+        // >>>>>>>>>>>>>>>>>>>> Back >>>>>>>>>>>>>>>>>>>>
+        JButton back = new useButton().createButton("-", "Back", MainColor.access("red"), 0, 0, "hand", parentPage,
+                "entry");
+
+        gridConst.insets = new Insets(20, 20, 20, 10);
+        gridConst.weightx = 0.3;
+        gridConst.weighty = 1;
+        gridConst.gridx = 0;
+        gridConst.fill = GridBagConstraints.BOTH;
+        rainPanel.add(rainSimulate, gridConst);
+
+        gridConst.insets = new Insets(20, 10, 20, 20);
+        gridConst.weightx = 0.3;
+        gridConst.weighty = 1;
+        gridConst.gridx = 1;
+        gridConst.fill = GridBagConstraints.BOTH;
+        rainPanel.add(artificialRainSimulate, gridConst);
+
+        gridConst.insets = new Insets(20, 0, 20, 20);
+        gridConst.weightx = 0.3;
+        gridConst.weighty = 1;
+        gridConst.gridx = 2;
+        gridConst.fill = GridBagConstraints.BOTH;
+        rainPanel.add(back, gridConst);
+
+    }
+
+    public JPanel getPanel() {
+        return this.rainPanel;
+
     }
 
 }

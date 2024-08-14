@@ -28,7 +28,7 @@ interface DashboardProps {
     public Map<JButton, Color> buttonColors = new HashMap<>();
     public Map<JButton, Integer> buttonValues = new HashMap<>();
     public Map<JButton, Integer> buttonPatentRate = new HashMap<>();
-    public Map<JButton, Integer> buttonPeoples = new HashMap<>();
+    public int[][] buttonPeoples = new int[10][20];
     public int[][] buttonValuesArray = new int[10][20];
     public boolean simulateAreaActive = false;
 
@@ -47,7 +47,6 @@ public class Dashboard implements DashboardProps {
     private Page parentPage;
 
     // People
-    private boolean isAlreadyUpdatePeople = false;
     private boolean isUpdatePeople = false;
     private int minrange = 0;
     private int maxrange = 0;
@@ -79,10 +78,10 @@ public class Dashboard implements DashboardProps {
                 JButton btn;
 
                 if (reduceDustOps.equals("all")) {
-                    btn = createButton(row, col, reduceDustInArea(content, 50));
+                    btn = createButton(row, col, reduceDustInArea(content, 50), buttonPeoples[row][col]);
 
                 } else {
-                    btn = createButton(row, col, content);
+                    btn = createButton(row, col, content, buttonPeoples[row][col]);
 
                 }
 
@@ -94,7 +93,7 @@ public class Dashboard implements DashboardProps {
 
     // Main Content
     private void updateDashboard(boolean simulate) {
-
+        System.out.println("Is Updated People: " + this.isUpdatePeople);
         panel.removeAll();
 
         try {
@@ -109,7 +108,18 @@ public class Dashboard implements DashboardProps {
                             for (String content : readLine) {
                                 // System.out.println("Btn Content: " + content);
 
-                                JButton btn = createButton(row, col, Integer.parseInt(content));
+                                JButton btn;
+                                if (!this.isUpdatePeople) {
+                                    System.out.println("Get People");
+                                    btn = createButton(row, col, Integer.parseInt(content),  buttonPeoples[row][col]);
+
+                                } else {
+                                    int randomPeople =  new useRandom().randomRange(this.minrange, this.maxrange);
+                                    System.out.println("Get New People: " + buttonPeoples[row][col]);
+                                    btn = createButton(row, col, Integer.parseInt(content), randomPeople);
+
+                                }
+
                                 panel.add(btn);
                                 col++;
                             }
@@ -124,13 +134,18 @@ public class Dashboard implements DashboardProps {
                         reloadContent();
                     }
 
+                    this.parentPage.setFileFeedback(false);
+                    this.isUpdatePeople = true;
+
                 } else {
                     new useAlert().warringAlert("File Must Be Formatted & File Size Was 10 * 20!");
+                    this.parentPage.setFileFeedback(true);
 
                 }
 
             } else {
                 new useAlert().warringAlert("Please Select File First!");
+                this.parentPage.setFileFeedback(true);
 
             }
 
@@ -172,8 +187,10 @@ public class Dashboard implements DashboardProps {
     }
 
     // Create Button
-    private JButton createButton(int row, int col, int dust) {
+    private JButton createButton(int row, int col, int dust, int people) {
         JButton btn = new JButton();
+
+        System.out.println("People: " + people);
 
         // Dashboard Content
         buttonValuesArray[row][col] = dust;
@@ -186,21 +203,8 @@ public class Dashboard implements DashboardProps {
             buttonValues.put(btn, dust);
             buttonPatentRate.put(btn, getPatentRate(dust));
 
-            // Set Default People
-            if (!buttonPeoples.containsKey(btn)) {
-                int people = 5000;
-                if (this.isUpdatePeople && this.isFileAlreadyExit) {
-                    if (buttonPeoples.containsKey(btn)) {
-                        people = buttonPeoples.get(btn);
-
-                    } else {
-                        people = new useRandom().randomRange(this.minrange, this.maxrange);
-
-                    }
-                }
-
-                buttonPeoples.put(btn, people);
-            }
+            // People
+            buttonPeoples[row][col] = people;
 
             btn.setBackground(buttonColor);
             btn.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED, buttonColor.darker(),
@@ -235,8 +239,8 @@ public class Dashboard implements DashboardProps {
                     // Send Content In Area Was Clicked Here!
                     System.out.println(">>>>>>>>>>>>>>>> Not Get Surrounding Content!");
 
-                    // System.out.println("Button / People: " + buttonPeoples.get(btn));
-                    this.parentPage.setStatisticData(dust, buttonPatentRate.get(btn), buttonPeoples.get(btn));
+                    System.out.println("Button / People: " + buttonPeoples[currentRow][currentCol]);
+                    this.parentPage.setStatisticData(dust, buttonPatentRate.get(btn), buttonPeoples[currentRow][currentCol]);
 
                 }
 
@@ -319,30 +323,23 @@ public class Dashboard implements DashboardProps {
         System.out.println("Min: " + this.minrange);
         System.out.println("Max: " + this.maxrange);
 
-        // Update People
-        this.isUpdatePeople = true;
-        this.isAlreadyUpdatePeople = true;
-
         updateDashboard(false);
 
     }
 
     public void setFile(String _File, boolean isFileExit) {
         this.isFileAlreadyExit = isFileExit;
-        buttonPeoples.clear();
 
         System.out.println("Dashboard Set File Work! -> " + _File);
         this.fileContent = _File;
 
         this.isUpdatePeople = false;
-        this.isAlreadyUpdatePeople = false;
         updateDashboard(false);
     }
 
     public void reduceDust(String options, boolean isActive) {
         this.isActive = isActive;
         this.isUpdatePeople = true;
-        this.isAlreadyUpdatePeople = true;
 
         this.parentPage.resetStatistic();
 

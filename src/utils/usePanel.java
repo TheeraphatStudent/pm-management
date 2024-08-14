@@ -1,16 +1,13 @@
 package utils;
 
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
 
 import java.awt.Color;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.InputStream;
 import java.awt.GridBagConstraints;
+import java.awt.LayoutManager;
 
 public class usePanel {
     public JPanel createSimplePanel(Color color) {
@@ -18,6 +15,15 @@ public class usePanel {
         colorPanel.setBackground(color);
 
         return colorPanel;
+
+    }
+
+    public JPanel createSimplePanelWithLayout(LayoutManager getLayout ,Color color) {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBackground(color);
+        panel.setLayout(getLayout);
+
+        return panel;
 
     }
 
