@@ -240,6 +240,85 @@ public class Footer extends JPanel {
 
 }
 
+class FilePanel extends Footer {
+    private JPanel filePanel = new usePanel().createSimplePanelWithLayout(new GridBagLayout(), MainColor.primary());
+
+    public FilePanel(Page parentPage) {
+        // >>>>>>>>>>>>>>>>>>>> File Panel >>>>>>>>>>>>>>>>>>>>
+        filePanel.setBackground(MainColor.primary());
+
+        GridBagConstraints gridConst = new GridBagConstraints();
+        gridConst.fill = GridBagConstraints.BOTH;
+
+        JButton fileBtn = new useButton().createButton("-", "Select File", MainColor.trinary(), 100, 50);
+        fileBtn.setToolTipText("Select dust .txt file");
+        // fileBtn.setFocusPainted(false);
+        // fileBtn.setContentAreaFilled(true);
+        // fileBtn.setOpaque(true);
+
+        JTextField fileSelected = new useTextarea().createTextField("Select File First!", MainColor.primary(), 12,
+                false);
+
+        fileBtn.addActionListener((e -> {
+            String currentDir = System.getProperty("user.dir");
+
+            // ขึ้นไปที่ Folder ก่อนหน้า 1 ระดับ
+            Path destDir = Paths.get(currentDir).getParent();
+
+            JFileChooser chooserFile = new JFileChooser(String.valueOf(destDir));
+            FileNameExtensionFilter restrict = new FileNameExtensionFilter(".txt", "txt");
+            chooserFile.setFileFilter(restrict);
+            chooserFile.setDialogTitle("Select a dust file!");
+            // chooserFile.setControlButtonsAreShown(true);
+
+            JFrame frame = new JFrame();
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+            // อ่าน File ที่ Resource โดยจะเข้าถึงผ่าน class
+            try (InputStream is = Footer.class.getClassLoader().getResourceAsStream("resource/images/file.png")) {
+                if (is == null) {
+                    System.out.println("Image not found");
+                } else {
+                    BufferedImage iconImage = ImageIO.read(is);
+                    frame.setIconImage(iconImage);
+                }
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+
+            int content = chooserFile.showSaveDialog(frame);
+
+            if (content == JFileChooser.APPROVE_OPTION) {
+                this.filePath = chooserFile.getSelectedFile().getAbsolutePath().replace("\\", "/");
+                fileSelected.setText(filePath);
+                System.out.println("Chosen File: " + this.filePath);
+
+                // ส่งค่ากลับไปที่ Parent Component
+                parentPage.setFilePathInDashboard(this.filePath, false);
+            }
+
+            frame.dispose();
+        }));
+
+        gridConst.weightx = 0;
+        gridConst.weighty = 1;
+        gridConst.insets = new Insets(20, 20, 20, 20);
+        filePanel.add(fileBtn, gridConst);
+
+        gridConst.weightx = 1;
+        gridConst.weighty = 1;
+        gridConst.insets = new Insets(20, 0, 20, 20);
+        filePanel.add(fileSelected, gridConst);
+
+    }
+
+    public JPanel getPanel() {
+        return this.filePanel;
+
+    }
+
+}
+
 class RandomPanel extends Footer {
     private JPanel panel = new usePanel().createSimplePanelWithLayout(new GridBagLayout(), MainColor.primary());
 
@@ -327,83 +406,6 @@ class RandomPanel extends Footer {
     public JPanel getPanel() {
         return this.panel;
     }
-}
-
-class FilePanel extends Footer {
-    private JPanel filePanel = new usePanel().createSimplePanelWithLayout(new GridBagLayout(), MainColor.primary());
-
-    public FilePanel(Page parentPage) {
-        // >>>>>>>>>>>>>>>>>>>> File Panel >>>>>>>>>>>>>>>>>>>>
-        filePanel.setBackground(MainColor.primary());
-
-        GridBagConstraints gridConst = new GridBagConstraints();
-        gridConst.fill = GridBagConstraints.BOTH;
-
-        JButton fileBtn = new useButton().createButton("-", "Select File", MainColor.trinary(), 100, 50);
-        fileBtn.setToolTipText("Select dust .txt file");
-        // fileBtn.setFocusPainted(false);
-        // fileBtn.setContentAreaFilled(true);
-        // fileBtn.setOpaque(true);
-
-        JTextField fileSelected = new useTextarea().createTextField("Select File First!", MainColor.primary(), 12,
-                false);
-
-        fileBtn.addActionListener((e -> {
-            String currentDir = System.getProperty("user.dir");
-            Path destDir = Paths.get(currentDir).getParent().getParent();
-
-            JFileChooser chooserFile = new JFileChooser(String.valueOf(destDir));
-            FileNameExtensionFilter restrict = new FileNameExtensionFilter(".txt", "txt");
-            chooserFile.setFileFilter(restrict);
-            chooserFile.setDialogTitle("Select a dust file!");
-            // chooserFile.setControlButtonsAreShown(true);
-
-            JFrame frame = new JFrame();
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-            // อ่าน File ที่ Resource โดยจะเข้าถึงผ่าน class
-            try (InputStream is = Footer.class.getClassLoader().getResourceAsStream("resource/images/file.png")) {
-                if (is == null) {
-                    System.out.println("Image not found");
-                } else {
-                    BufferedImage iconImage = ImageIO.read(is);
-                    frame.setIconImage(iconImage);
-                }
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            }
-
-            int content = chooserFile.showSaveDialog(frame);
-
-            if (content == JFileChooser.APPROVE_OPTION) {
-                this.filePath = chooserFile.getSelectedFile().getAbsolutePath().replace("\\", "/");
-                fileSelected.setText(filePath);
-                System.out.println("Chosen File: " + this.filePath);
-
-                // ส่งค่ากลับไปที่ Parent Component
-                parentPage.setFilePathInDashboard(this.filePath, false);
-            }
-
-            frame.dispose();
-        }));
-
-        gridConst.weightx = 0;
-        gridConst.weighty = 1;
-        gridConst.insets = new Insets(20, 20, 20, 20);
-        filePanel.add(fileBtn, gridConst);
-
-        gridConst.weightx = 1;
-        gridConst.weighty = 1;
-        gridConst.insets = new Insets(20, 0, 20, 20);
-        filePanel.add(fileSelected, gridConst);
-
-    }
-
-    public JPanel getPanel() {
-        return this.filePanel;
-
-    }
-
 }
 
 class RainPanel extends Footer {
