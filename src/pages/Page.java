@@ -115,6 +115,8 @@ public class Page extends JFrame {
         System.out.println("Min: " + min);
         System.out.println("Max: " + max);
 
+        dashboard.setpeoplerange(min, max);
+
     }
 
     // Rain
@@ -127,8 +129,15 @@ public class Page extends JFrame {
     }
 
     // Statistic
-    public void getStatisticData(int dust, int patentRate) {
-        statistic.setStatistic(dust, patentRate);
+    public void getStatisticData(int dust, int patentRate,int people) {
+        statistic.setStatistic(dust, patentRate,people);
+
+        reloadContent();
+
+    }
+
+    public void getStatisticData(int people) {
+        statistic.setStatistic(people);
 
         reloadContent();
 

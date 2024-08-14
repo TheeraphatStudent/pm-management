@@ -28,6 +28,7 @@ interface DashboardProps {
     public Map<JButton, Color> buttonColors = new HashMap<>();
     public Map<JButton, Integer> buttonValues = new HashMap<>();
     public Map<JButton, Integer> buttonPatentRate = new HashMap<>();
+    public Map<JButton, Integer> buttonpeople = new HashMap<>();
     public int[][] buttonValuesArray = new int[10][20];
     public boolean simulateAreaActive = false;
 
@@ -45,7 +46,12 @@ public class Dashboard implements DashboardProps {
     private boolean isActive = false;
     private Page parentPage;
 
-    public Dashboard(Page page) {
+    // people 
+    private boolean isupdatepeople = false;
+    private int minrg = 0;
+    private int maxrg = 0;
+
+private int maxrange;    public Dashboard(Page page) {
         this.parentPage = page;
 
     }
@@ -118,6 +124,8 @@ public class Dashboard implements DashboardProps {
                     }
 
                 } else {
+                    updatedRain(this.reduceDustOps);
+                    reloadContent();
                     new useAlert().warringAlert("File Must Be Formatted & File Size Was 10 * 20!");
 
                 }
@@ -131,6 +139,7 @@ public class Dashboard implements DashboardProps {
             System.err.println("Something went wrong!: " + e);
         }
     }
+
 
     private boolean preloadDashboard() throws FileNotFoundException {
         Scanner fr = new Scanner(new File(this.fileContent));
@@ -179,6 +188,15 @@ public class Dashboard implements DashboardProps {
             buttonValues.put(btn, dust);
             buttonPatentRate.put(btn, getPatentRate(dust));
 
+            //setpeople
+            // buttonpeople.put(btn,getpeople (this.minrg,this.maxrg));
+            if(this.isupdatepeople){
+ buttonpeople.put(btn,5000);
+}          
+else{
+buttonpeople.put(btn, getpeople (this.minrg,this.maxrg));
+} 
+
             btn.setBackground(buttonColor);
             btn.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED, buttonColor.darker(),
                     buttonColor.darker().darker()));
@@ -212,7 +230,7 @@ public class Dashboard implements DashboardProps {
                     // Send Content In Area Was Clicked Here!
                     System.out.println(">>>>>>>>>>>>>>>> Not Get Surrounding Content!");
 
-                    this.parentPage.getStatisticData(dust, buttonPatentRate.get(btn));
+                    // this.parentPage.setStatistic(dust, buttonPatentRate.get(btn).buttonpeople.get(btn));
 
                 }
 
@@ -283,6 +301,18 @@ public class Dashboard implements DashboardProps {
 
     }
 
+    //People range 
+
+    private int getpeople(int min,int max){
+        // return randomRange(min,max);
+        return randomPatentRate(min, max);
+
+    } 
+    //public
+   public void setpeoplerange(int min,int max){
+    this.maxrg = max ;
+    this.minrg = min ;
+   }
     private int randomPatentRate(int min, int max) {
         Random rand = new Random();
         return (int) (rand.nextInt(max - min + 1) + min);
@@ -293,6 +323,7 @@ public class Dashboard implements DashboardProps {
     public void setFile(String _File, boolean isFileExit) {
         this.isFileAlreadyExit = isFileExit;
 
+        this.isupdatepeople = false;
         System.out.println("Dashboard Set File Work! -> " + _File);
         this.fileContent = _File;
         updateDashboard(false);

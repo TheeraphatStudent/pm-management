@@ -25,6 +25,7 @@ import java.awt.LayoutManager;
 // - Event
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
+import java.lang.NumberFormatException;
 
 // nio
 import java.nio.file.Path;
@@ -127,12 +128,13 @@ public class Footer extends JPanel {
         filePanel.add(fileSelected, gridConst);
         add(filePanel);
 
-        // Random Panel
+        // Random Panel,value
+        JTextField randomValue = new Footer().createTextField(String.valueOf(0), MainColor.primary(), 12);
         JPanel randomPanel = createPanel(new GridBagLayout(), MainColor.primary());
 
         // Action
         JDialog dialogRange = new Footer().createModal(new GridBagLayout(), MainColor.secondary(), 500, 250,
-                "Random Peoples Range");
+                "Random Peoples Range", this.parentPage);
         JPanel randomAction = createPanel(new GridLayout(1, 2, 20, 20), MainColor.primary());
         JButton randomRange = new useButton().createButton("-", "Random Range", MainColor.trinary(), 100, 20);
         JButton random = new useButton().createButton("-", "Random", MainColor.trinary(), 100, 20);
@@ -148,7 +150,20 @@ public class Footer extends JPanel {
         randomAction.add(randomRange);
         randomAction.add(random);
 
-        JTextField randomValue = new Footer().createTextField("0", MainColor.primary(), 12);
+        randomValue.addActionListener(e->{
+            String content = e.getActionCommand();
+
+            try {
+                int people = Integer.parseInt(content);
+                System.out.println("Get Content : "+people);
+
+                this.parentPage.getStatisticData(people);
+            } catch (NumberFormatException err) {
+               System.out.println(err);
+            }
+
+
+        });
 
         gridConst.insets = new Insets(20, 20, 20, 20);
         gridConst.weightx = 1;
@@ -294,7 +309,7 @@ public class Footer extends JPanel {
         return textField;
     }
 
-    private JDialog createModal(LayoutManager layout, Color color, int width, int height, String title) {
+    private JDialog createModal(LayoutManager layout, Color color, int width, int height, String title, Page getPage) {
         GridBagConstraints gridConst = new GridBagConstraints();
 
         JDialog dialog = new JDialog();
@@ -378,7 +393,7 @@ public class Footer extends JPanel {
                 System.out.println("Min Range: " + this.minrange);
                 System.out.println("Max Range: " + this.maxrange);
 
-                // this.parentPage.setrandomrange(this.minrange, this.maxrange);
+                getPage.setrandomrange(this.minrange, this.maxrange);
 
                 dialog.dispose();
             }
