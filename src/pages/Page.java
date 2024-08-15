@@ -32,7 +32,7 @@ public class Page extends JFrame {
 
     Dashboard dashboard = new Dashboard(this);
     Statistic statistic = new Statistic();
-    Footer footer;
+    Footer footer = new Footer(MainColor.primary(), this);
 
     public Page() {
         setTitle("PM 2.5 Reporter");
@@ -65,7 +65,7 @@ public class Page extends JFrame {
 
         gridConst.gridx = 0;
         gridConst.gridy = 0;
-        gridConst.weightx = 0.6;
+        gridConst.weightx = 0.5;
         gridConst.weighty = 1;
         gridConst.insets = new Insets(20, 20, 20, 20);
         panel.add(dashboard.getDashboard(), gridConst);
@@ -88,8 +88,6 @@ public class Page extends JFrame {
         gridConst.weighty = 0.1;
         gridConst.insets = new Insets(0, 20, 20, 20);
 
-        // Passing ref from footer to parent frame
-        footer = new Footer(MainColor.primary(), this);
         add(footer, gridConst);
 
         new WindowClosingFrameEvent(this, new EntryPage());
@@ -115,7 +113,12 @@ public class Page extends JFrame {
         System.out.println("Min: " + min);
         System.out.println("Max: " + max);
 
-        dashboard.setpeoplerange(min, max);
+        dashboard.setPeopleRange(min, max);
+
+    }
+
+    public void setFileFeedback(boolean feedback) {
+        footer.getFileFeedback(feedback);
 
     }
 
@@ -129,15 +132,8 @@ public class Page extends JFrame {
     }
 
     // Statistic
-    public void getStatisticData(int dust, int patentRate,int people) {
-        statistic.setStatistic(dust, patentRate,people);
-
-        reloadContent();
-
-    }
-
-    public void getStatisticData(int people) {
-        statistic.setStatistic(people);
+    public void setStatisticData(int dust, int patentRate, int people) {
+        statistic.setStatistic(dust, patentRate, people);
 
         reloadContent();
 

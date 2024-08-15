@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.Scanner;
 
 import javax.swing.BorderFactory;
@@ -22,13 +21,14 @@ import javax.swing.JPanel;
 import resource.colors.MainColor;
 
 import utils.useAlert;
+import utils.useRandom;
 
 interface DashboardProps {
     public JPanel panel = new JPanel(new GridLayout(10, 20, 2, 2));
     public Map<JButton, Color> buttonColors = new HashMap<>();
     public Map<JButton, Integer> buttonValues = new HashMap<>();
     public Map<JButton, Integer> buttonPatentRate = new HashMap<>();
-    public Map<JButton, Integer> buttonpeople = new HashMap<>();
+    public int[][] buttonPeoples = new int[10][20];
     public int[][] buttonValuesArray = new int[10][20];
     public boolean simulateAreaActive = false;
 
@@ -46,12 +46,12 @@ public class Dashboard implements DashboardProps {
     private boolean isActive = false;
     private Page parentPage;
 
-    // people 
-    private boolean isupdatepeople = false;
-    private int minrg = 0;
-    private int maxrg = 0;
+    // People
+    private boolean isUpdatePeople = false;
+    private int minrange = 0;
+    private int maxrange = 0;
 
-private int maxrange;    public Dashboard(Page page) {
+    public Dashboard(Page page) {
         this.parentPage = page;
 
     }
@@ -75,16 +75,17 @@ private int maxrange;    public Dashboard(Page page) {
             for (int col = 0; col < 20; col++) {
                 int content = buttonValuesArray[row][col];
                 // System.out.println("Content: " + content);
+                JButton btn;
 
                 if (reduceDustOps.equals("all")) {
-                    JButton btn = createButton(row, col, reduceDustInArea(content, 50));
-                    panel.add(btn);
+                    btn = createButton(row, col, reduceDustInArea(content, 50), buttonPeoples[row][col]);
 
                 } else {
-                    JButton btn = createButton(row, col, content);
-                    panel.add(btn);
+                    btn = createButton(row, col, content, buttonPeoples[row][col]);
 
                 }
+
+                panel.add(btn);
             }
         }
 
@@ -92,17 +93,13 @@ private int maxrange;    public Dashboard(Page page) {
 
     // Main Content
     private void updateDashboard(boolean simulate) {
-
+        System.out.println("Is Updated People: " + this.isUpdatePeople);
         panel.removeAll();
 
         try {
             if (!this.fileContent.equals("")) {
                 if (preloadDashboard()) {
-                    if (this.isFileAlreadyExit) {
-                        updatedRain(this.reduceDustOps);
-                        reloadContent();
-
-                    } else {
+                    if (!this.isFileAlreadyExit || !simulate) {
                         Scanner fr = new Scanner(new File(this.fileContent));
                         int row = 0;
                         while (fr.hasNextLine()) {
@@ -111,7 +108,18 @@ private int maxrange;    public Dashboard(Page page) {
                             for (String content : readLine) {
                                 // System.out.println("Btn Content: " + content);
 
-                                JButton btn = createButton(row, col, Integer.parseInt(content));
+                                JButton btn;
+                                if (!this.isUpdatePeople) {
+                                    System.out.println("Get People");
+                                    btn = createButton(row, col, Integer.parseInt(content),  buttonPeoples[row][col]);
+
+                                } else {
+                                    int randomPeople =  new useRandom().randomRange(this.minrange, this.maxrange);
+                                    System.out.println("Get New People: " + buttonPeoples[row][col]);
+                                    btn = createButton(row, col, Integer.parseInt(content), randomPeople);
+
+                                }
+
                                 panel.add(btn);
                                 col++;
                             }
@@ -121,17 +129,23 @@ private int maxrange;    public Dashboard(Page page) {
                         reloadContent();
                         fr.close();
                         this.isFileAlreadyExit = true;
+                    } else {
+                        updatedRain(this.reduceDustOps);
+                        reloadContent();
                     }
 
+                    this.parentPage.setFileFeedback(false);
+                    this.isUpdatePeople = true;
+
                 } else {
-                    updatedRain(this.reduceDustOps);
-                    reloadContent();
                     new useAlert().warringAlert("File Must Be Formatted & File Size Was 10 * 20!");
+                    this.parentPage.setFileFeedback(true);
 
                 }
 
             } else {
                 new useAlert().warringAlert("Please Select File First!");
+                this.parentPage.setFileFeedback(true);
 
             }
 
@@ -139,7 +153,6 @@ private int maxrange;    public Dashboard(Page page) {
             System.err.println("Something went wrong!: " + e);
         }
     }
-
 
     private boolean preloadDashboard() throws FileNotFoundException {
         Scanner fr = new Scanner(new File(this.fileContent));
@@ -174,8 +187,10 @@ private int maxrange;    public Dashboard(Page page) {
     }
 
     // Create Button
-    private JButton createButton(int row, int col, int dust) {
+    private JButton createButton(int row, int col, int dust, int people) {
         JButton btn = new JButton();
+
+        System.out.println("People: " + people);
 
         // Dashboard Content
         buttonValuesArray[row][col] = dust;
@@ -188,14 +203,8 @@ private int maxrange;    public Dashboard(Page page) {
             buttonValues.put(btn, dust);
             buttonPatentRate.put(btn, getPatentRate(dust));
 
-            //setpeople
-            // buttonpeople.put(btn,getpeople (this.minrg,this.maxrg));
-            if(this.isupdatepeople){
- buttonpeople.put(btn,5000);
-}          
-else{
-buttonpeople.put(btn, getpeople (this.minrg,this.maxrg));
-} 
+            // People
+            buttonPeoples[row][col] = people;
 
             btn.setBackground(buttonColor);
             btn.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED, buttonColor.darker(),
@@ -230,22 +239,24 @@ buttonpeople.put(btn, getpeople (this.minrg,this.maxrg));
                     // Send Content In Area Was Clicked Here!
                     System.out.println(">>>>>>>>>>>>>>>> Not Get Surrounding Content!");
 
-                    // this.parentPage.setStatistic(dust, buttonPatentRate.get(btn).buttonpeople.get(btn));
+                    System.out.println("Button / People: " + buttonPeoples[currentRow][currentCol]);
+                    this.parentPage.setStatisticData(dust, buttonPatentRate.get(btn), buttonPeoples[currentRow][currentCol]);
 
                 }
 
             });
 
             btn.setToolTipText(String.valueOf(dust));
-            btn.setPreferredSize(new Dimension(10, 20));
-            btn.setFocusPainted(false);
-            btn.setContentAreaFilled(true);
-            btn.setOpaque(true);
 
         } else {
             btn.setBackground(MainColor.access("-"));
             btn.setEnabled(false);
         }
+
+        btn.setPreferredSize(new Dimension(30, 30));
+        btn.setFocusPainted(false);
+        btn.setContentAreaFilled(true);
+        btn.setOpaque(true);
 
         return btn;
     }
@@ -283,55 +294,52 @@ buttonpeople.put(btn, getpeople (this.minrg,this.maxrg));
                 buttonValuesArray[i][j] = setSelectedContent(buttonValuesArray[i][j], i, j, isSurrounding);
             }
 
-            updateDashboard(false);
+            updateDashboard(true);
         }
     }
 
     // Patent Rate
     private int getPatentRate(int dust) {
+        // System.out.println("Patent Rate Work!");
+
         if (dust <= 50) {
-            return randomPatentRate(0, 9);
+            return new useRandom().randomRange(0, 9);
         } else if (dust <= 100) {
-            return randomPatentRate(10, 19);
+            return new useRandom().randomRange(10, 19);
         } else if (dust <= 150) {
-            return randomPatentRate(20, 29);
+            return new useRandom().randomRange(20, 29);
         } else {
-            return 30;
+            return new useRandom().randomRange(30, 50);
         }
 
     }
 
-    //People range 
+    // Public
+    public void setPeopleRange(int min, int max) {
+        System.out.println("Set People Range On Dashboard Work!");
+        this.minrange = min;
+        this.maxrange = max;
 
-    private int getpeople(int min,int max){
-        // return randomRange(min,max);
-        return randomPatentRate(min, max);
+        System.out.println("Min: " + this.minrange);
+        System.out.println("Max: " + this.maxrange);
 
-    } 
-    //public
-   public void setpeoplerange(int min,int max){
-    this.maxrg = max ;
-    this.minrg = min ;
-   }
-    private int randomPatentRate(int min, int max) {
-        Random rand = new Random();
-        return (int) (rand.nextInt(max - min + 1) + min);
+        updateDashboard(false);
 
     }
 
-    // Public
     public void setFile(String _File, boolean isFileExit) {
         this.isFileAlreadyExit = isFileExit;
 
-        this.isupdatepeople = false;
         System.out.println("Dashboard Set File Work! -> " + _File);
         this.fileContent = _File;
+
+        this.isUpdatePeople = false;
         updateDashboard(false);
     }
 
     public void reduceDust(String options, boolean isActive) {
-
         this.isActive = isActive;
+        this.isUpdatePeople = true;
 
         this.parentPage.resetStatistic();
 

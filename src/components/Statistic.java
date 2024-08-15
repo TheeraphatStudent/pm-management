@@ -2,6 +2,7 @@ package components;
 
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
@@ -14,11 +15,11 @@ import javax.swing.JTextPane;
 import resource.colors.MainColor;
 
 import utils.usePanel;
-import utils.useTextPane;
+import utils.useTextarea;
 
 interface StatisticProps {
     public JPanel panel = new JPanel(new GridBagLayout());
-    public JPanel toolPanel = new JPanel(new GridLayout(4, 1, 20, 20));
+    public JPanel toolPanel = new JPanel(new GridLayout(5, 1, 20, 20));
     public JPanel statisticPanel = new JPanel(new GridLayout(5, 1, 50, 20));
 
 }
@@ -40,9 +41,11 @@ public class Statistic implements StatisticProps {
     private void updateStatistics() {
         reloadContent();
 
-        panel.setBackground(MainColor.getOriginalColor(this.sDust));
-        toolPanel.setBackground(MainColor.getOriginalColor(this.sDust));
-        statisticPanel.setBackground(MainColor.getOriginalColor(this.sDust));
+        Color bgContent = MainColor.getOriginalColor(this.sDust);
+
+        panel.setBackground(bgContent);
+        toolPanel.setBackground(bgContent);
+        statisticPanel.setBackground(bgContent);
 
         GridBagConstraints gridConst = new GridBagConstraints();
         GridBagConstraints gridConstColorPanel = new GridBagConstraints();
@@ -57,10 +60,13 @@ public class Statistic implements StatisticProps {
          * n. ...
          */
         LinkedHashMap<String, String> toolsContent = new LinkedHashMap<String, String>();
-        toolsContent.put("Patient of 30%", "red");
+        toolsContent.put("Patient of 30 - 50%", "red");
         toolsContent.put("Patient of 20 - 29%", "orange");
         toolsContent.put("Patient of 10 - 19%", "yellow");
         toolsContent.put("Patient of 0 - 9%", "green");
+
+        JPanel statisticImage = new usePanel().createPanelImage(getStatisticImage(this.sDust), bgContent.darker());
+        toolPanel.add(statisticImage);
 
         for (Map.Entry<String, String> entry : toolsContent.entrySet()) {
             String key = entry.getKey();
@@ -68,7 +74,7 @@ public class Statistic implements StatisticProps {
 
             System.out.println(key);
 
-            JTextPane statisticPane = new useTextPane().createSimpleTextPane(key, MainColor.access(value));
+            JTextPane statisticPane = new useTextarea().createSimpleTextPane(key, MainColor.access(value));
             JPanel colorPanel = new usePanel().createSimplePanel(MainColor.access(value));
 
             colorPanel.add(statisticPane, gridConstColorPanel);
@@ -125,33 +131,48 @@ public class Statistic implements StatisticProps {
 
     }
 
-    // Public
-    public void setStatistic(int dust, int patentRate,int people) {
-        int patent = ((this.sPeople * patentRate) / 100);
+    private String getStatisticImage(int dust) {
+        String result = "health";
 
-        this.sPeople = people; 
+        if (dust <= 50) {
+            return result += 1;
+        } else if (dust <= 100) {
+            return result += 2;
+        } else if (dust <= 150) {
+            return result += 3;
+        } else {
+            return result += 4;
+        }
+
+    }
+
+    // Public
+    public void setStatistic(int dust, int patentRate, int people) {
+
+        this.sPeople = people;
         this.sDust = dust;
-        this.sPatent = patent;
+        this.sPatent = ((people * patentRate) / 100);
         this.sPatentRate = patentRate;
-        this.sHealth = this.sPeople - patent;
+        this.sHealth = this.sPeople - this.sPatent;
 
         updateStatistics();
 
     }
 
     public void setStatistic(int people) {
-        int patent = ((this.sPeople * this.sPatentRate) / 100);
+        System.out.println("Set People / Area");
+        System.out.println(people);
 
         this.sPeople = people;
-        this.sPatent = patent;
-        this.sHealth = this.sPeople - patent;
+        // this.sPatent = ((people * this.sPatentRate) / 100);
+        // this.sHealth = this.sPeople - this.sPatent;
 
         updateStatistics();
 
     }
 
     public void resetStatistic() {
-        // this.sPeople = 0;
+        this.sPeople = 0;
         this.sDust = 0;
         this.sPatent = 0;
         this.sPatentRate = 0;
