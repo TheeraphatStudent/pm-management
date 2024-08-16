@@ -9,7 +9,6 @@ import java.awt.Insets;
 import java.awt.GridLayout;
 
 // Swing
-import javax.swing.text.SimpleAttributeSet;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import javax.swing.JButton;
@@ -74,8 +73,6 @@ public class Devpanel extends JPanel {
 
     private JTextPane createTextPane(String text) {
         JTextPane textPane = new JTextPane();
-        SimpleAttributeSet attributes = new SimpleAttributeSet();
-        textPane.setCharacterAttributes(attributes, true);
 
         textPane.setFont(new Font("Arial", Font.PLAIN, 20));
         textPane.setText(text);
