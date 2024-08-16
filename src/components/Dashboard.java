@@ -162,6 +162,7 @@ public class Dashboard implements DashboardProps {
         int row = 0;
         while (fr.hasNextLine()) {
             String[] readLine = fr.nextLine().split("\\s+");
+
             int col = 0;
             for (String content : readLine) {
                 // System.out.println("Content: " + readLine);
