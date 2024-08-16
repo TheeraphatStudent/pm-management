@@ -348,7 +348,7 @@ class RandomPanel extends Footer {
                 parentPage.setrandomrange(0, 0);
 
             } else {
-                parentPage.setrandomrange(0, randomPeoplePerArea);
+                parentPage.setrandomrange(randomPeoplePerArea, randomPeoplePerArea);
 
             }
 
@@ -376,7 +376,7 @@ class RandomPanel extends Footer {
                     parentPage.setrandomrange(0, 0);
 
                 } else {
-                    parentPage.setrandomrange(0, people);
+                    parentPage.setrandomrange(people, people);
 
                 }
 
