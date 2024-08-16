@@ -113,12 +113,12 @@ public class Dashboard implements DashboardProps {
 
                                 JButton btn;
                                 if (!this.isUpdatePeople) {
-                                    System.out.println("Get People");
+                                    // System.out.println("Get People");
                                     btn = createButton(row, col, Integer.parseInt(content), buttonPeoples[row][col]);
 
                                 } else {
                                     int randomPeople = new useRandom().randomRange(this.minrange, this.maxrange);
-                                    System.out.println("Get New People: " + buttonPeoples[row][col]);
+                                    // System.out.println("Get New People: " + buttonPeoples[row][col]);
                                     btn = createButton(row, col, Integer.parseInt(content), randomPeople);
 
                                 }
@@ -162,7 +162,8 @@ public class Dashboard implements DashboardProps {
     private boolean preloadDashboard() throws FileNotFoundException {
         Scanner fr = new Scanner(new File(this.fileContent));
 
-        int rowComplete = 0, colComplete = 0;
+        int colComplete = 0;
+        int colError = 0;
 
         int row = 0;
         // ถ้าไฟล์มีบรรทัดถัดไป
@@ -173,19 +174,28 @@ public class Dashboard implements DashboardProps {
 
             int col = 0;
             for (; col <= readLine.length; col++) {
+                System.out.print(" " + col);
                 colComplete = col;
             }
 
-            row++;
+            if (colComplete < 20) {
+                System.out.print(" Err!");
+                colError++;
 
-            rowComplete = row;
+            } else {
+                row++;
+
+            }
+
+            System.out.println();
+
         }
 
-        System.out.printf("Row Content: %d\nCol Content: %d", rowComplete, colComplete);
+        System.out.printf("Row Content: %d\nCol Content: %d\n", row, colComplete);
 
         fr.close();
         // ? ?คือเป็นจริง :ถ้าไม่เป็นจริง
-        return (rowComplete == 10 && colComplete == 20) ? true : false;
+        return (row == 10 && colError <= 0) ? true : false;
 
     }
 
@@ -193,7 +203,7 @@ public class Dashboard implements DashboardProps {
     private JButton createButton(int row, int col, int dust, int people) {
         JButton btn = new JButton();
 
-        System.out.println("People: " + people);
+        // System.out.println("People: " + people);
 
         // Dashboard Content
         buttonValuesArray[row][col] = dust;
