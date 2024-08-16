@@ -50,8 +50,6 @@ public class EntryPage extends JFrame {
         setLocation((int) (Math.floor(new WindowEntryScreen().getWidthCenter() / 1.45)),
                 (int) (Math.floor(new WindowEntryScreen().getHeightCenter() / 1.4)));
 
-        // System.out.println(width + " | " + height);
-
         try (InputStream is = Page.class.getClassLoader().getResourceAsStream("resource/images/icon.png")) {
             if (is == null) {
                 System.out.println("Image not found");
@@ -68,7 +66,6 @@ public class EntryPage extends JFrame {
 
         JPanel panel2 = new JPanel(new GridLayout());
         panel2.setBackground(null);
-        // panel2.setBackground(Color.red);
 
         panel.add(navToPage);
         panel.add(navToDev);
@@ -78,8 +75,6 @@ public class EntryPage extends JFrame {
         gridConst.gridy = 1;
         gridConst.weightx = 0;
         gridConst.weighty = 0;
-        gridConst.ipadx = 200;
-        gridConst.ipady = 0;
         gridConst.fill = GridBagConstraints.BOTH;
         gridConst.insets = new Insets(25, 50, 50, 50);
 
@@ -106,8 +101,6 @@ public class EntryPage extends JFrame {
         gridConst.gridy = 0;
         gridConst.weightx = 1.0;
         gridConst.weighty = 0.1;
-        gridConst.ipadx = 0;
-        gridConst.ipady = 0;
         gridConst.fill = GridBagConstraints.CENTER;
         gridConst.insets = new Insets(50, 50, 25, 50);
         add(panel2, gridConst);;

@@ -72,7 +72,6 @@ public class WindowClosingFrameEvent {
     }
 
     private void changeFrameEvent() {
-        // this.currentFrame.dispose();
         if (!this.destFrame.isActive()) {
             System.out.println("Change frame event work!");
             this.destFrame.setVisible(true);
