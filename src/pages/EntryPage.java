@@ -63,7 +63,7 @@ public class EntryPage extends JFrame {
             e.printStackTrace();
         }
 
-        JPanel panel = new JPanel(new GridLayout(2, 1, 20, 20));
+        JPanel panel = new JPanel(new GridLayout(2, 2, 20, 20));
         panel.setBackground(null);
 
         JPanel panel2 = new JPanel(new GridLayout());

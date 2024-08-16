@@ -29,11 +29,12 @@ import resource.environment.WindowEntryScreen;
 
 public class Page extends JFrame {
     JPanel panel = new JPanel(new GridBagLayout());
-
+    //components
     Dashboard dashboard = new Dashboard(this);
     Statistic statistic = new Statistic();
     Footer footer = new Footer(MainColor.primary(), this);
 
+    //page constructor สืบทอดคุณสมบัติจาก JFrame
     public Page() {
         setTitle("PM 2.5 Reporter");
         getContentPane().setBackground(MainColor.secondary());
@@ -58,6 +59,7 @@ public class Page extends JFrame {
         setLocation((int) (Math.floor(new WindowEntryScreen().getWidthCenter() / 2.5)),
                 (int) (Math.floor(new WindowEntryScreen().getHeight()) / 6));
         setLayout(new GridBagLayout());
+        
         GridBagConstraints gridConst = new GridBagConstraints();
         gridConst.fill = GridBagConstraints.BOTH;
 
