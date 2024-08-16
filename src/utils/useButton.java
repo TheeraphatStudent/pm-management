@@ -28,8 +28,7 @@ public class useButton {
     public JButton createButton(String btnCase, String title, Color bgColor, int width, int height) {
         JButton btn = new JButton(title);
         btn.setBorderPainted(false);
-        btn.setOpaque(true);
-        // btn.setContentAreaFilled(false);
+        btn.setOpaque(true);//โอ เพค - ความทึบ
         btn.setBackground(bgColor);
         btn.setPreferredSize(new Dimension(width, height));
         btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -179,14 +178,15 @@ public class useButton {
             e.printStackTrace();
         }
 
+        // dest - ปลายทาง
         btn.addActionListener((e -> {
             if (destpage.equals("page")) {
-                JFrame page = new Page();
+                Page page = new Page();
                 new WindowClosingFrameEvent(thispage, page);
                 page.setVisible(true);
                 thispage.dispose();
             } else if (destpage.equals("member")) {
-                JFrame member = new Member();
+                Member member = new Member();
                 new WindowClosingFrameEvent(thispage, member);
                 member.setVisible(true);
                 thispage.dispose();
