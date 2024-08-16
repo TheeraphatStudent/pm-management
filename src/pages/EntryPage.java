@@ -68,6 +68,7 @@ public class EntryPage extends JFrame {
 
         JPanel panel2 = new JPanel(new GridLayout());
         panel2.setBackground(null);
+        // panel2.setBackground(Color.red);
 
         panel.add(navToPage);
         panel.add(navToDev);
