@@ -50,8 +50,8 @@ public class Member extends JFrame {
 
         GridBagConstraints gridConst = new GridBagConstraints();
 
-        JPanel dev = new Devpanel(0, 0, 0, 0, "Theeraphat Chueanokkhum", "66011212103", "theeraphat");
-        JPanel dev2 = new Devpanel(0, 0, 0, 0, "Boonnisa Pitchawong", "66011212184", "boonisa");
+        JPanel dev = new Devpanel( "Theeraphat Chueanokkhum", "66011212103", "theeraphat");
+        JPanel dev2 = new Devpanel( "Boonnisa Pitchawong", "66011212184", "boonisa");
         JButton back = new useButton().createButton("-", "<< Roll Back", MainColor.access("red"), 0, 0, "hand", this, "entry");
 
         gridConst.insets = new Insets(50, 50, 50, 25);

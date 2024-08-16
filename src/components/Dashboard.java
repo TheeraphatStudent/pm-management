@@ -100,6 +100,7 @@ public class Dashboard implements DashboardProps {
 
     try {
       if (!this.fileContent.equals("")) {
+        //ลองโหลด
         if (preloadDashboard()) {
           // simulate - จำลองฝน
           if (!this.isFileAlreadyExit|| !simulate) {
@@ -108,6 +109,7 @@ public class Dashboard implements DashboardProps {
             while (fr.hasNextLine()) {
               String[] readLine = fr.nextLine().split("\\s+");
               int col = 0;
+              //คอนเท้น เข้าถึงอาเรreadline
               for (String content : readLine) {
                 // System.out.println("Btn Content: " + content);
 
@@ -203,6 +205,7 @@ public class Dashboard implements DashboardProps {
 
       buttonColors.put(btn, buttonColor);
       buttonValues.put(btn, dust);
+      // PatentRate - คนป่วย
       buttonPatentRate.put(btn, getPatentRate(dust));
 
       // People
@@ -330,7 +333,6 @@ public class Dashboard implements DashboardProps {
   }
 
   public void setFile(String _File, boolean isFileExit) {
-    // thisเรียกใช้งานattibute
     this.isFileAlreadyExit = isFileExit;
 
     System.out.println("Dashboard Set File Work! -> " + _File);
