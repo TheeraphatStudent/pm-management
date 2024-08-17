@@ -49,6 +49,7 @@ import utils.useButton;
 import utils.usePanel;
 import utils.useRandom;
 import utils.useTextarea;
+import utils.useTransform;
 
 public class Footer extends JPanel {
     // Protected - สามารถทำให้ Class ที่อยูใน Package เดียวกันสามารถเข้าถึงได้
@@ -58,8 +59,6 @@ public class Footer extends JPanel {
     private int minrange = 0;
     private int maxrange = 0;
     private boolean israndomrangechicked = false;
-
-    protected boolean artificialRainState = false;
 
     public Footer() {
     }
@@ -186,7 +185,7 @@ public class Footer extends JPanel {
             // สามารถเรียกใช้งาน Method ต่างๆได้เหมือนกับ Component นั้นๆได้
             if (startComponent instanceof JTextField) {
                 JTextField startField = (JTextField) startComponent;
-                this.minrange = Integer.parseInt(startField.getText());
+                this.minrange = new useTransform().getNumberFromString(startField.getText());
             }
 
             Component stopComponent = stopPanel.getComponent(1);
@@ -194,12 +193,12 @@ public class Footer extends JPanel {
 
             if (stopComponent instanceof JTextField) {
                 JTextField stopField = (JTextField) stopComponent;
-                this.maxrange = Integer.parseInt(stopField.getText());
+                this.maxrange = new useTransform().getNumberFromString(stopField.getText());
             }
 
             if (this.minrange > this.maxrange) {
                 dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
-                new useAlert().warringAlert("Min must be lessest Max people range");
+                new useAlert().warringAlert("Min must be less then Max people range");
             } else {
                 System.out.println("Min Range: " + this.minrange);
                 System.out.println("Max Range: " + this.maxrange);
@@ -359,7 +358,7 @@ class RandomPanel extends Footer {
             randomValue.setText(String.valueOf(randomPeoplePerArea));
         });
 
-         // >>>>>>>>>>>>>>>>>>>> Dialog Random Range >>>>>>>>>>>>>>>>>>>>
+        // >>>>>>>>>>>>>>>>>>>> Dialog Random Range >>>>>>>>>>>>>>>>>>>>
         randomRange.addActionListener(e -> dialogRange.setVisible(true));
 
         panel.setBackground(MainColor.primary());
@@ -373,20 +372,8 @@ class RandomPanel extends Footer {
             String content = e.getActionCommand();
 
             try {
-                // Sample Case: 04800abcd
-                // Sample Case2: 0000000000000400abcd
-                String regex = "\\d+(?=\\D*$)";
-                Pattern pattern = Pattern.compile(regex);
-                Matcher match = pattern.matcher(content);
 
-                String getCleanContent = "";
-
-                if (match.find()) {
-                    getCleanContent = match.group();
-
-                }
-
-                int people = Integer.parseInt(getCleanContent);
+                int people = new useTransform().getNumberFromString(content);
 
                 if (this.isFileError) {
                     parentPage.setrandomrange(0, 0);
@@ -426,20 +413,21 @@ class RandomPanel extends Footer {
 
 class RainPanel extends Footer {
     JPanel rainPanel = new usePanel().createSimplePanelWithLayout(new GridBagLayout(), MainColor.primary());
+    private boolean artificialRainState = false;
 
     public RainPanel(Page parentPage) {
         // >>>>>>>>>>>>>>>>>>>> Rain Panel >>>>>>>>>>>>>>>>>>>>
         GridBagConstraints gridConst = new GridBagConstraints();
 
         JButton rainSimulate = new useButton().createButton("rain", "", MainColor.trinary(), 60, 60);
+        // Artificial Rain
+        JButton artificialRainSimulate = new useButton().createButton("air", "", MainColor.trinary(), 60, 60);
 
         rainSimulate.addActionListener((e -> {
             parentPage.reduceDustActions("all", false);
+            artificialRainSimulate.setBackground(MainColor.trinary());
 
         }));
-
-        // Artificial Rain
-        JButton artificialRainSimulate = new useButton().createButton("air", "", MainColor.trinary(), 60, 60);
 
         artificialRainSimulate.addActionListener((e -> {
             if (!this.artificialRainState) {
