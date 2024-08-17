@@ -1,5 +1,8 @@
 package components;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 // Swing
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -356,6 +359,7 @@ class RandomPanel extends Footer {
             randomValue.setText(String.valueOf(randomPeoplePerArea));
         });
 
+         // >>>>>>>>>>>>>>>>>>>> Dialog Random Range >>>>>>>>>>>>>>>>>>>>
         randomRange.addActionListener(e -> dialogRange.setVisible(true));
 
         panel.setBackground(MainColor.primary());
@@ -369,8 +373,20 @@ class RandomPanel extends Footer {
             String content = e.getActionCommand();
 
             try {
-                int people = Integer.parseInt(content);
-                System.out.println("Get Content: " + people);
+                // Sample Case: 04800abcd
+                // Sample Case2: 0000000000000400abcd
+                String regex = "\\d+(?=\\D*$)";
+                Pattern pattern = Pattern.compile(regex);
+                Matcher match = pattern.matcher(content);
+
+                String getCleanContent = "";
+
+                if (match.find()) {
+                    getCleanContent = match.group();
+
+                }
+
+                int people = Integer.parseInt(getCleanContent);
 
                 if (this.isFileError) {
                     parentPage.setrandomrange(0, 0);
