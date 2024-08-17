@@ -172,7 +172,7 @@ public class Dashboard implements DashboardProps {
             // (ตัวอย่างไฟล์)
             String[] readLine = fr.nextLine().split("\\s+");
 
-            int col = 0;
+            int col = 1;
             for (; col <= readLine.length; col++) {
                 System.out.print(" " + col);
                 colComplete = col;
@@ -194,7 +194,7 @@ public class Dashboard implements DashboardProps {
         System.out.printf("Row Content: %d\nCol Content: %d\n", row, colComplete);
 
         fr.close();
-        // ? ?คือเป็นจริง :ถ้าไม่เป็นจริง
+        //? ?คือเป็นจริง :ถ้าไม่เป็นจริง
         return (row == 10 && colError <= 0) ? true : false;
 
     }
@@ -246,7 +246,7 @@ public class Dashboard implements DashboardProps {
 
                 if (this.isActive) {
                     System.out.println("<<<<<<<<<<<<<<< Get Surrounding Content Work!");
-                    getSurroundingContent(dust, btn);
+                    getSurroundingContent(dust);
 
                 } else {
                     // Send Content In Area Was Clicked Here!
@@ -276,7 +276,13 @@ public class Dashboard implements DashboardProps {
     }
 
     private int reduceDustInArea(int dust, int percentage) {
-        return (dust >= 0 && dust <= 250) ? ((dust) - ((int) (Math.floor((dust * percentage) / 100)))) : dust;
+        double reduce = ((dust * percentage) / 100);
+
+        if (reduce == 0.0) {
+            return 0;
+        }
+
+        return (dust >= 0 && dust <= 250) ? (int) ((dust) - (Math.floor(reduce))) : dust;
 
     }
 
@@ -286,7 +292,7 @@ public class Dashboard implements DashboardProps {
 
     }
 
-    private void getSurroundingContent(int content, JButton btn) {
+    private void getSurroundingContent(int content) {
         if (this.clickedRow == -1 || this.clickedCol == -1) {
             return;
         }
@@ -361,13 +367,13 @@ public class Dashboard implements DashboardProps {
 
         switch (options) {
             case "all":
-                // System.out.println("Reduce Dust In Dashboard Work!");
+                System.out.println("Reduce Dust In Dashboard Work!");
                 this.reduceDustOps = "all";
                 updateDashboard(true);
                 break;
 
             case "area":
-                // System.out.println("Reduce Dust By Area In Dashboard Work!");
+                System.out.println("Reduce Dust By Area In Dashboard Work!");
                 this.reduceDustOps = "area";
                 updateDashboard(true);
 
